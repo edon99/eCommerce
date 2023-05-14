@@ -1,0 +1,36 @@
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+}
+nav a:hover {
+    background-color: #fff;
+    color: #333;
+    border-radius: 5px;
+}
+.success-message {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+    padding: .75rem 1.25rem;
+    border-radius: .25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .success-message i {
+    color: #155724;
+    margin-right: 5px;
+  }
+  
+
