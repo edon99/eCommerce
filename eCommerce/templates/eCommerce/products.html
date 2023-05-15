@@ -1,45 +1,14 @@
 {% extends "eCommerce/base.html"%}
-<!-- {% load static %} -->
+{% load static %}
 
 {% block content %}
 <head>
     <title>Products</title>
 	
     <link rel="stylesheet" href="{% static 'eCommerce/home.css' %}">
+    <link rel="stylesheet" href="{% static 'eCommerce/product.css' %}">
 </head>
 <body> 
-  <!-- <div class="filters-bar">
-    <div class="filter-section">
-      <label for="price-filter">Price:</label>
-      <select id="price-filter">
-        <option value="all">All</option>
-        <option value="low-to-high">Low to High</option>
-        <option value="high-to-low">High to Low</option>
-      </select>
-    </div>
-    
-    <div class="filter-section">
-      <label for="date-filter">Date:</label>
-      <select id="date-filter">
-        <option value="all">All</option>
-        <option value="recent">Most Recent</option>
-        <option value="oldest">Oldest</option>
-      </select>
-    </div>
-    
-    <div class="filter-section">
-      <label for="category-filter">Category:</label>
-      <select id="category-filter">
-        <option value="all">All</option>
-        {% for product in products %}
-        <option value="all">{{ product.categorie }}</option>
-        {% endfor %}
-        
-  
-      </select>
-    </div>
-  </div> -->
-  
   <form method="get" class="filter-form">
     {% for field in filter.form %}
         <div class="form-field">
@@ -49,8 +18,8 @@
     {% endfor %}
     <div class="submit-btn"><button type="submit">Apply Filters</button></div>
 </form>
-
-    {% for product in products %}
+<div class="products">
+   {% for product in products %}
         <div class="product-container">
             <a href="{% url 'product-detail' product.id %}">{{ product.title }}</a>
             <p class="category">Category: {{ product.categorie }}</p>
@@ -60,10 +29,12 @@
             <p class="seller">Created at : {{ product.date_created}}</p>
         </div>
     {% endfor %}
+</div>
+   
     
 </body>
 <style>
-    .product-container {
+    /* .product-container {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -71,6 +42,14 @@
   max-width: 400px;
   margin: 0 auto;
   margin-top: 30px;
+}
+img{
+  margin: 0 auto;
+  width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 1;
+  object-fit: cover;
 }
 
 .product-container a {
@@ -113,50 +92,6 @@
   font-size: 14px;
   font-style: italic;
   margin-top: 8px;
-}
-/* .filters-bar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background-color: #f4f4f4;
-  padding: 10px;
-}
-
-.filter-section {
-  margin-right: 20px;
-}
-
-label {
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-select {
-  padding: 5px;
-  border: none;
-  border-radius: 4px;
-  background-color: #ffffff;
-  color: #333333;
-  font-size: 14px;
-  outline: none;
-}
-
-select:hover {
-  cursor: pointer;
-}
-
-
-select::-ms-expand {
-  display: none;
-}
-
-select::after {
-  content: '\25BE';
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  pointer-events: none;
 } */
 
 .filter-form {

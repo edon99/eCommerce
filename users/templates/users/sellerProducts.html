@@ -1,11 +1,11 @@
 {% extends "eCommerce/base.html"%}
-<!-- {% load static %} -->
+{% load static %}
 
 {% block content %}
 <head>
     <title>Products</title>
 	
-    <!-- <link rel="stylesheet" href="{% static 'eCommerce/home.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'eCommerce/product.css' %}">
 </head>
 <body>
 
@@ -19,72 +19,22 @@
     <div class="submit-btn"><button type="submit">Apply Filters</button></div>
 </form>
 
-    {% for product in products %}
+    <div class="products">
+   {% for product in products %}
         <div class="product-container">
             <a href="{% url 'product-detail' product.id %}">{{ product.title }}</a>
             <p class="category">Category: {{ product.categorie }}</p>
             <img src="{{ product.image.url }}" alt="Product Image">
             <p class="price">{{ product.price }} $</p></p>
             <p class="seller">Seller: {{ product.seller }}</p>
-            <p class="seller">Created at : {{ product.date_created|date:"F d, Y" }}</p>
+            <p class="seller">Created at : {{ product.date_created}}</p>
         </div>
     {% endfor %}
+</div>
+    
     
 </body>
 <style>
-  body{
-    font-family: Arial, sans-serif;
-    margin: 0;
-  }
-    .product-container {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  max-width: 400px;
-  margin: 0 auto;
-  margin-top: 30px;
-}
-
-.product-container a {
-  font-size: 32px;
-  font-weight: bold;
-  margin-top: 0;
-  text-decoration: none;
-  color: #000;
-}
-.product-container a:hover {
-  color: darkblue;
-}
-
-
-.category {
-  font-size: 16px;
-  font-style: italic;
-  margin-top: 8px;
-  margin-bottom: 16px;
-}
-
-img {
-  margin: 0 auto;
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.price {
-  font-size: 24px;
-  font-weight: bold;
-  margin-top: 16px;
-  margin-bottom: 8px;
-}
-
-.seller {
-  font-size: 14px;
-  font-style: italic;
-  margin-top: 8px;
-}
 .filters-bar {
   display: flex;
   align-items: center;

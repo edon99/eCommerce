@@ -130,7 +130,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS =[BASE_DIR / 'STATIC',]
+# STATICFILES_DIRS =[BASE_DIR / 'STATIC',]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
@@ -138,9 +138,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# STATICFILES_DIRS = (
-#     os.path.join(BASE_DIR, 'eCommerce', "static"),
-# )
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'eCommerce', "static"),
+)
 
 LOGIN_REDIRECT_URL ='site-home'
 

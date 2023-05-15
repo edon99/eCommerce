@@ -5,6 +5,7 @@
 <head>
     <title>Home Page</title>
     <link rel="stylesheet" href="{% static 'eCommerce/home.css' %}">
+    <link rel="stylesheet" href="{% static 'eCommerce/product.css' %}">
 </head>
 <body>
         <div class="search-container">
@@ -18,19 +19,19 @@
             <div class="filter">Filter 2</div>
             <div class="filter">Filter 3</div>
         </div>
-        <main>
-            <div class="container">
-                {% for product in products %}
-                <div class="box">
-                    <h2>{{ product.title }}</h2>
-                    <p>{{ product.categorie }}</p>
-                    <img src="{{ product.image.url }}" alt="{{ product.title }}">
-                    <p class="price">${{ product.price }}</p>
-                    <p class="seller">Sold by {{ product.seller }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </main>
+        <div class="products">
+             
+            {% for product in products %}
+                 <div class="product-container">
+                     <a href="{% url 'product-detail' product.id %}">{{ product.title }}</a>
+                     <p class="category">Category: {{ product.categorie }}</p>
+                     <img src="{{ product.image.url }}" alt="Product Image">
+                     <p class="price">{{ product.price }} $</p></p>
+                     <p class="seller">Seller: {{ product.seller }}</p>
+                     <p class="seller">Created at : {{ product.date_created}}</p>
+                 </div>
+             {% endfor %}
+         </div>
         
 </body>
 

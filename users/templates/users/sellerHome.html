@@ -5,7 +5,7 @@
 <head>
     <title>Seller Home Page</title>
 
-    <link rel="stylesheet" href="{% static 'eCommerce/home.css' %}">
+    <link rel="stylesheet" href="{% static 'eCommerce/product.css' %}">
 </head>
 <body>
       
@@ -13,59 +13,19 @@
     <div class="new-product-link"><a class="" href="{% url 'product-create' %}">New Product</a> </div>
     
     
-    <main>
-      <div class="container">
-          {% for product in products %}
-          <div class="box">
-              <h2>{{ product.title }}</h2>
-              <p>{{ product.categorie }}</p>
-              <img src="{{ product.image.url }}" alt="{{ product.title }}">
-              <p class="price">${{ product.price }}</p>
-              <p class="seller">Sold by {{ product.seller }}</p>
-          </div>
-          {% endfor %}
-      </div>
-  </main>
+    <div class="products">
+      {% for product in products %}
+           <div class="product-container">
+               <a href="{% url 'product-detail' product.id %}">{{ product.title }}</a>
+               <p class="category">Category: {{ product.categorie }}</p>
+               <img src="{{ product.image.url }}" alt="Product Image">
+               <p class="price">{{ product.price }} $</p></p>
+               <p class="seller">Seller: {{ product.seller }}</p>
+               <p class="seller">Created at : {{ product.date_created}}</p>
+           </div>
+       {% endfor %}
+   </div>
        
 </body>
-<style>
-.new-product-link a {
-  width: 140px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 10px;
-  border-radius: 8px;
-  color: #444;
-  text-decoration: none;
-  position: relative;
-  display: inline-block;
-  padding-right: 16px;
-  margin: 10px;
-}
 
-.new-product-link a::after {
-  content: '\2192';
-  position: absolute;
-  top: 50%;
-  right: 5px;
-  transform: translateY(-50%);
-  font-size: 16px;
-  font-weight: bold;
-  opacity: 0;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.new-product-link a:hover::after {
-  opacity: 1;
-}
-
-.new-product-link a:hover {
-  color: #000;
-}
-
-.new-product-link a:focus {
-  outline: none;
-  color: #000;
-}
-</style>
 {% endblock %}
