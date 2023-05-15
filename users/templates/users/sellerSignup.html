@@ -12,21 +12,7 @@
 	<form method="POST">
         {% csrf_token %}
         <fieldset class="form-group">
-            <!-- <label for="username" class="label">Username:</label>
-			{{ form.username }} 
-		<label for="firstname" class="label">firstname:</label>
-			{{ form.firstname }} 
-		<label for="lastname" class="label">lastname:</label>
-			{{ form.lastname }} 
-		<label for="email" class="label">Email:</label>
-			{{ form.email }} 
-		<label for="password1" class="label">Password:</label>
-			{{ form.password1 }} 
-		<label for="password2" class="label">Confirm Password:</label>
-			{{ form.password2 }}  -->
 			{{ form }}
-		
-		
         <button type="submit" class="button">Sign Up</button>
 	</fieldset>
 	</form>

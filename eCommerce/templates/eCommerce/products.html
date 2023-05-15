@@ -1,0 +1,208 @@
+{% extends "eCommerce/base.html"%}
+<!-- {% load static %} -->
+
+{% block content %}
+<head>
+    <title>Products</title>
+	
+    <link rel="stylesheet" href="{% static 'eCommerce/home.css' %}">
+</head>
+<body> 
+  <!-- <div class="filters-bar">
+    <div class="filter-section">
+      <label for="price-filter">Price:</label>
+      <select id="price-filter">
+        <option value="all">All</option>
+        <option value="low-to-high">Low to High</option>
+        <option value="high-to-low">High to Low</option>
+      </select>
+    </div>
+    
+    <div class="filter-section">
+      <label for="date-filter">Date:</label>
+      <select id="date-filter">
+        <option value="all">All</option>
+        <option value="recent">Most Recent</option>
+        <option value="oldest">Oldest</option>
+      </select>
+    </div>
+    
+    <div class="filter-section">
+      <label for="category-filter">Category:</label>
+      <select id="category-filter">
+        <option value="all">All</option>
+        {% for product in products %}
+        <option value="all">{{ product.categorie }}</option>
+        {% endfor %}
+        
+  
+      </select>
+    </div>
+  </div> -->
+  
+  <form method="get" class="filter-form">
+    {% for field in filter.form %}
+        <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+        </div>
+    {% endfor %}
+    <div class="submit-btn"><button type="submit">Apply Filters</button></div>
+</form>
+
+    {% for product in products %}
+        <div class="product-container">
+            <a href="{% url 'product-detail' product.id %}">{{ product.title }}</a>
+            <p class="category">Category: {{ product.categorie }}</p>
+            <img src="{{ product.image.url }}" alt="Product Image">
+            <p class="price">{{ product.price }} $</p></p>
+            <p class="seller">Seller: {{ product.seller }}</p>
+            <p class="seller">Created at : {{ product.date_created}}</p>
+        </div>
+    {% endfor %}
+    
+</body>
+<style>
+    .product-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  max-width: 400px;
+  margin: 0 auto;
+  margin-top: 30px;
+}
+
+.product-container a {
+  font-size: 32px;
+  font-weight: bold;
+  margin-top: 0;
+  text-decoration: none;
+  color: #000;
+}
+.product-container a:hover {
+ 
+  color: darkblue;
+}
+
+
+.category {
+  font-size: 16px;
+  font-style: italic;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.product-container img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.price {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.seller {
+  font-size: 14px;
+  font-style: italic;
+  margin-top: 8px;
+}
+/* .filters-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #f4f4f4;
+  padding: 10px;
+}
+
+.filter-section {
+  margin-right: 20px;
+}
+
+label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+select {
+  padding: 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333333;
+  font-size: 14px;
+  outline: none;
+}
+
+select:hover {
+  cursor: pointer;
+}
+
+
+select::-ms-expand {
+  display: none;
+}
+
+select::after {
+  content: '\25BE';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+} */
+
+.filter-form {
+   width: 100%;
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   margin-top: 20px;
+}
+
+.form-field {
+    margin-bottom: 10px;
+    margin-right: 20px;
+}
+
+.form-field label {
+    display: block;
+    font-weight: bold;
+}
+
+.form-field select,
+.form-field input {
+    /* Add your form field styles here */
+    width: 100%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.submit-btn button[type="submit"] {
+    /* Add your submit button styles here */
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 14px;
+    margin-right: 20px;
+}
+
+.submit-btn button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+</style>
+
+{% endblock %}

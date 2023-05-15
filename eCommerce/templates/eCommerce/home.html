@@ -4,7 +4,6 @@
 {% block content %}
 <head>
     <title>Home Page</title>
-	
     <link rel="stylesheet" href="{% static 'eCommerce/home.css' %}">
 </head>
 <body>
@@ -19,14 +18,20 @@
             <div class="filter">Filter 2</div>
             <div class="filter">Filter 3</div>
         </div>
-       
-            {% for product in products %}
-            <h1>{{ product.title }}</h1>
-            <p>{{ product.categorie }}</p>
-            <p>{{ product.price }} $</p>
-            <p>{{ product.date| date:"F d, Y"}}</p>
-            <p>{{ product.seller }}</p>
-            {% endfor %}
+        <main>
+            <div class="container">
+                {% for product in products %}
+                <div class="box">
+                    <h2>{{ product.title }}</h2>
+                    <p>{{ product.categorie }}</p>
+                    <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                    <p class="price">${{ product.price }}</p>
+                    <p class="seller">Sold by {{ product.seller }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </main>
         
 </body>
+
 {% endblock %}

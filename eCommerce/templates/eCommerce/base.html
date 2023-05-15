@@ -1,30 +1,57 @@
-	{% load static %}
-    <link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}">
-	<nav>
-	
-		<a href="{% url 'site-home' %}">Home</a>
-		<a href="#">Products</a>
-        <a href="{% url 'site-about' %}">About</a>
-		<a href="#">Cart</a>
-		
-		{% if user.is_authenticated  %}
-			<a href="{% url 'profile' %}">Profile</a>
-			<a href="{% url 'logout' %}">Logout</a>
-		{% else %}
-			<a href="{% url 'login' %}">Login</a>
-			<a href="{% url 'signup' %}">SignUp</a>
-		{% endif %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}">
+{% if user.role == 'SELLER' %}
+    <div class="navbar">
+        <nav>
 
-		
-	</nav>
-	{% if messages %}
-	{% for message in messages %}
-		<div class="success-message">
-			<i> {{ message }} </i>
-		</div >
-	{%  endfor %}
-	{% endif %}
-	
-	{% block content %}{% endblock %}
-   
+            <a href="{% url 'sellerHome' %}">Dashboard</a>
+            <a href="{% url 'seller-products' %}">My business</a>
+            <a href="{% url 'seller-analytics' %}">Analytics</a>
+            
+            {% if user.is_authenticated  %}
+                <img src="{{ user.profile.image.url }}" alt="" style="height: 40px; width: 40px;">
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'logout' %}">Logout</a>
+                
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">SignUp</a>
+            {% endif %}
+        </nav>
+    </div>
     
+{% else %}
+    <div class="navbar">
+        <nav>
+        <a href="{% url 'site-home' %}">Home</a>
+        <a href="{% url 'site-products' %}">Products</a>
+        <a href="{% url 'site-about' %}">About</a>
+        
+        {% if user.is_authenticated  %}
+            <img src="{{ user.profile.image.url }}" alt="" style="height: 40px; width: 40px;">
+            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+            
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'signup' %}">SignUp</a>
+        {% endif %} 
+    </nav>
+    </div>
+
+    
+{% endif %}
+
+	
+
+
+{% if messages %}
+{% for message in messages %}
+    <div class="success-message">
+        <i> {{ message }} </i>
+    </div >
+{%  endfor %}
+{% endif %}
+
+{% block content %}{% endblock %}
+
