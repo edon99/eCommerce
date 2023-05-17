@@ -1,0 +1,83 @@
+{% extends "eCommerce/base.html"%} 
+{% load static %} 
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Statistics</title>
+  <link rel="stylesheet" href="{% static 'eCommerce/adminDashboard.css' %}" />
+</head>
+<body>
+    <main>
+       <div class="container">
+    <h2>Website Statistics</h2>
+    <div class="stats">
+      <div class="stat">
+        <h3>Users</h3>
+        <p id="usersCount">{{ users_count }}</p>
+      </div>
+      <div class="stat">
+        <h3>Sellers</h3>
+        <p id="sellersCount">{{ sellers }}</p>
+      </div>
+      <div class="stat">
+        <h3>Products</h3>
+        <p id="productsCount">{{ products_count }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Additional Statistics</h2>
+    <!-- Add your additional stats here -->
+  </div>
+
+  <div class="container">
+    <h2>User Table</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Join Date</th>
+          <th>Role</th>
+        </tr>
+        {% for user in users %}
+        
+        <tr>
+            <th>{{ user.username }}</th>
+            <th>{{ user.email }}</th>
+            <th>{{ user.firstname }}</th>
+            <th>{{ user.lastname }}</th>
+            <th>{{ user.date_joined }}</th>
+            <th>{{ user.role }}</th>
+          </tr>
+        {% endfor %}
+      </thead>
+      <tbody>
+        <!-- Populate the table dynamically using JavaScript or server-side scripting -->
+      </tbody>
+    </table>
+  </div> 
+    </main>
+  
+
+  <script>
+    // JavaScript code to fetch and update the statistics dynamically
+    // Replace the API_URL with your actual API endpoint to retrieve the statistics
+    const API_URL = 'https://api.example.com/stats';
+
+    fetch(API_URL)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('usersCount').textContent = data.users;
+        document.getElementById('sellersCount').textContent = data.sellers;
+        document.getElementById('productsCount').textContent = data.products;
+      })
+      .catch(error => console.error('Error:', error));
+  </script>
+</body>
+</html>
+{% endblock %}

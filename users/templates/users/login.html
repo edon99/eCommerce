@@ -1,115 +1,32 @@
 {% extends "eCommerce/base.html"%}
 
-<!-- {% load static %} -->
+{% load static %}
 {% block content %}
 <head>
+	<link rel="stylesheet" href="{% static 'eCommerce/signup.css' %}" />
 	<title>Login Page</title>
 </head>
 <body>
 
     <div class="container">
-        	<h1 class="title">Login</h1>
-	<form method="POST">
-        {% csrf_token %}
-        <fieldset class="form-group">
+		<h1 class="title">Login</h1>
+		<form method="POST" class="signup-form">
+		  {% csrf_token %}
+		  <fieldset class="form-group">
 			<label for="username" class="label">Username:</label>
 			<input type="text" id="username" name="username" class="input">
-	
+			
 			<label for="password" class="label">Password:</label>
 			<input type="password" id="password" name="password" class="input">
+			
+			<button style="margin-top: 10px;" type="submit" class="button">Login</button>
+		  </fieldset>
+		</form>
 		
-        <button type="submit" class="button">Login</button>
-	</fieldset>
-	</form>
-    
-   
-	<p class="link">New around here? <a href="{% url 'signup' %}" class="link-text">Sign up</a></p>
-	<p class="link">Become a seller? <a href="{% url 'seller-signup' %}" class="link-text">Learn more</a></p>
-    </div>
+		<p class="link">New around here? <a href="{% url 'signup' %}" class="link-text">Sign up</a></p>
+		<p class="link">Become a seller? <a href="{% url 'seller-signup' %}" class="link-text">Learn more</a></p>
+	  </div>
+	  
 
 </body>
-<style>
-    /* Reset default styles */
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-
-/* Set body background color and font family */
-body {
-	background-color: #f7f7f7;
-	font-family: 'Montserrat', sans-serif;
-}
-
-/* Center content on the page */
-.container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-top: 50px;
-}
-
-/* Style the form */
-.form-group {
-	display: grid;
-	grid-template-columns: 1fr;
-	grid-gap: 10px;
-	padding: 20px;
-	border-radius: 5px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	background-color: #fff;
-	/* justify-items: center; */
-}
-
-/* Style the form inputs */
-.input {
-	border: 1px solid gray;
-	margin:0 100px;
-	border-radius: 3px;
-	padding: 10px;
-	background-color: #f7f7f7;
-	font-size: 16px;
-}
-
-/* Style the form labels */
-.label {
-	margin-bottom: 5px;
-	font-size: 16px;
-	font-weight: bold;
-}
-
-/* Style the submit button */
-.button {
-	background-color: #4CAF50;
-	color: white;
-	border: none;
-	border-radius: 5px;
-	padding: 10px;
-	font-size: 16px;
-	cursor: pointer;
-	width: 50%;
-	margin: 0 auto; /* Add this line */
-	display: block; /* Add this line */
-	
-}
-
-/* Style the link text */
-.link {
-	margin-top: 20px;
-	font-size: 14px;
-	text-align: center;
-}
-
-.link-text {
-	color: #4CAF50;
-	text-decoration: none;
-}
-
-.link-text:hover {
-	text-decoration: underline;
-}
-
-</style>
-
 {% endblock %}

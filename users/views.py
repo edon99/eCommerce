@@ -19,8 +19,9 @@ def signup(request):
             form.save()
             messages.success(request, f'Your account has been created!')
             return redirect('login')
+
+        
     else:       
-        messages.success(request,f'sum is wrong22')
         form = UserForm() 
     return render(request, 'users/signup.html',{'form':form})
 
@@ -33,11 +34,16 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
 
         sellers = User.objects.filter(role="SELLER")
+        admins = User.objects.filter(is_staff=True)
         if user is not None: 
             for seller in sellers:
                 if seller.username == username :
                     login(request, user)
                     return redirect('sellerHome')
+                    
+            for admin in admins :
+                if admin.username == username:
+                    return redirect('admin-dashboard') 
             login(request, user)
             return redirect('site-home')              
         else:
@@ -59,7 +65,6 @@ def sellerSignup(request):
     form=SellerForm(data)
     print(data)
     if request.method == 'POST':
-        # form = SellerForm(request.POST or None)
         form = SellerForm(data or None)
         if form.is_valid():
             print("this is after validation "+ data["role"])
@@ -116,6 +121,16 @@ def analytics(request) :
         'products':product
     }
     return render(request, 'users/sellerAnalytics.html', context)
+
+def admin_dash(request):
+    context = {
+        'products':Product.objects.all(),
+        'sellers':User.objects.filter(role="SELLER").count(),
+        'users':User.objects.all().exclude(is_staff=True),
+        'products_count':Product.objects.count(),
+        'users_count':User.objects.count(),
+    }
+    return render(request, 'users/adminDash.html', context)
 
 @login_required
 def profile(request):

@@ -16,6 +16,8 @@ class User(AbstractUser):
 
     base_role = Role.BUYER
     role = models.CharField(max_length=50, choices=Role.choices, default=base_role)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
 
     def save(self, *args, **kwargs):
         # if not self.pk:

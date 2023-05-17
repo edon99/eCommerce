@@ -1,124 +1,65 @@
-{% extends "eCommerce/base.html"%}
-
-<!-- {% load static %} -->
+{% extends "eCommerce/base.html"%} 
+{% load static %} 
 {% block content %}
+<!DOCTYPE html>
 <head>
-	<title>Sign Up Page</title>
+  <link rel="stylesheet" href="{% static 'eCommerce/signup.css' %}" />
+  <title>Sign Up Page</title>
 </head>
 <body>
-
-    <div class="container">
-        	<h1 class="title">Sign Up</h1>
-	<form method="POST">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <!-- <label for="username" class="label">Username:</label>
-			{{ form.username }} 
-		<label for="firstname" class="label">firstname:</label>
-			{{ form.firstname }} 
-		<label for="lastname" class="label">lastname:</label>
-			{{ form.lastname }} 
-		<label for="email" class="label">Email:</label>
-			{{ form.email }} 
-		<label for="password1" class="label">Password:</label>
-			{{ form.password1 }} 
-		<label for="password2" class="label">Confirm Password:</label>
-			{{ form.password2 }}  -->
-			{{ form }}
-		
-		
-        <button type="submit" class="button">Sign Up</button>
-	</fieldset>
-	</form>
-    
-   
-	<p class="link">Already have an account? <a href="{% url 'login' %}" class="link-text">Log in</a></p>
-	<p class="link">Become a seller? <a href="{% url 'seller-signup' %}" class="link-text">Learn more</a></p>
-    </div>
-
+	<div class="container">
+		<h1 class="title">Sign Up</h1>
+		<form method="POST" class="signup-form">
+		  {% csrf_token %}
+		  <fieldset class="form-group">
+			
+				<div class="form-group">
+				<label for="{{ form.username.id_for_label }}">Username</label>
+				{{ form.username }}
+				<span class="form-error">{{ form.username.errors }}</span>
+			  </div>
+			
+			  
+			  <div class="form-row">
+			  <div class="form-group">
+				<label for="{{ form.first_name.id_for_label }}">First Name</label>
+				{{ form.firstname }}
+			  </div>
+			  <div class="form-group">
+				<label for="{{ form.last_name.id_for_label }}">Last Name</label>
+				{{ form.lastname }}
+			  </div>
+			</div>
+			<div class="form-group">
+			  <label for="{{ form.email.id_for_label }}">Email</label>
+			  {{ form.email }}
+			  <span class="form-error">{{ form.email.errors }}</span>
+			</div>
+			<div class="form-row">
+			  <div class="form-group">
+				<label for="{{ form.password1.id_for_label }}">Password</label>
+				{{ form.password1 }}
+				<span class="form-error">{{ form.password1.errors }}</span>
+			  </div>
+			  <div class="form-group">
+				<label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+				{{ form.password2 }}
+				<span class="form-error">{{ form.password2.errors }}</span>
+			  </div>
+			</div>
+			<button type="submit" class="button">Sign Up</button>
+		  </fieldset>
+		</form>
+		<p class="link">
+		  Already have an account?
+		  <a href="{% url 'login' %}" class="link-text">Log in</a>
+		</p>
+		<p class="link">
+		  Become a seller?
+		  <a href="{% url 'seller-signup' %}" class="link-text">Learn more</a>
+		</p>
+	  </div>
+	  
 </body>
-<style>
-    /* Reset default styles */
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-
-/* Set body background color and font family */
-body {
-	background-color: #f7f7f7;
-	font-family: 'Montserrat', sans-serif;
-}
-
-/* Center content on the page */
-.container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-top: 50px;
-}
-
-/* Style the form */
-.form-group {
-	display: grid;
-	grid-template-columns: 1fr;
-	grid-gap: 10px;
-	padding: 20px;
-	border-radius: 5px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	background-color: #fff;
-	/* justify-items: center; */
-}
-
-/* Style the form inputs */
-.input {
-	border: 1px solid gray;
-	margin:0 100px;
-	border-radius: 3px;
-	padding: 10px;
-	background-color: #f7f7f7;
-	font-size: 16px;
-}
-
-/* Style the form labels */
-.label {
-	margin-bottom: 5px;
-	font-size: 16px;
-	font-weight: bold;
-}
-
-/* Style the submit button */
-.button {
-	background-color: #4CAF50;
-	color: white;
-	border: none;
-	border-radius: 5px;
-	padding: 10px;
-	font-size: 16px;
-	cursor: pointer;
-	width: 50%;
-	margin: 0 auto; /* Add this line */
-	display: block; /* Add this line */
-	
-}
-
-/* Style the link text */
-.link {
-	margin-top: 20px;
-	font-size: 14px;
-	text-align: center;
-}
-
-.link-text {
-	color: #4CAF50;
-	text-decoration: none;
-}
-
-.link-text:hover {
-	text-decoration: underline;
-}
-
-</style>
-
 {% endblock %}
+</html>
