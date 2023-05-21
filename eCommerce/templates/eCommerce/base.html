@@ -4,9 +4,6 @@
 <link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}" />  
 </head>
 {% if user.role == 'SELLER' %}
-
-
-
 <nav class="navbar">
   <a href="{% url 'sellerHome' %}">Dashboard</a>
   <a href="{% url 'seller-products' %}">My business</a>
@@ -25,33 +22,30 @@
 {% else %}
 <nav class="navbar">
   
-    <a href="{% url 'site-home' %}">Home</a>
-    <a href="{% url 'site-products' %}">Products</a>
-    <a href="{% url 'site-about' %}">About</a>
+  <a href="{% url 'site-home' %}">Home</a>
+  <a href="{% url 'site-products' %}">Products</a>
+  <a href="{% url 'site-about' %}">About</a>
 
-    {% if user.is_authenticated %}
-  <div class="dropdown"></div>
-    <img
-      src="{{ user.profile.image.url }}"
-      alt=""
-      style="height: 40px; width: 40px"
-    /><div class="arrow"></div>
-    <div class="dropdown-content"></div>
-      <a href="{% url 'profile' %}">Profile</a>
-      <a href="{% url 'logout' %}">Logout</a>
-    </div>
+  {% if user.is_authenticated %}
+<div class="dropdown"></div>
+  <img
+    src="{{ user.profile.image.url }}"
+    alt=""
+    style="height: 40px; width: 40px"
+  /><div class="arrow"></div>
+  <div class="dropdown-content"></div>
+    <a href="{% url 'profile' %}">Profile</a>
+    <a href="{% url 'logout' %}">Logout</a>
   </div>
-    {% else %}
-    <a href="{% url 'login' %}">Login</a>
-    <a href="{% url 'signup' %}">SignUp</a>
-    {% endif %}
-  
-</nav>
-<style>
-    
-</style>
+</div>
+  {% else %}
+  <a href="{% url 'login' %}">Login</a>
+  <a href="{% url 'signup' %}">SignUp</a>
+  {% endif %}
 
-{% endif %} {% if messages %} {% for message in messages %}
+</nav>
+{% endif %}
+ {% if messages %} {% for message in messages %}
 <div class="success-message">
   <i> {{ message }} </i>
 </div>

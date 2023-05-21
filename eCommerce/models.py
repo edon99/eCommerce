@@ -20,8 +20,6 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=30)
 
     def save(self, *args, **kwargs):
-        # if not self.pk:
-        #     self.role = self.base_role
             return super().save(*args, **kwargs)
     
         
@@ -44,5 +42,12 @@ class Product(models.Model):
     def get_absolute_url(self):
          return reverse('product-detail',kwargs={'pk':self.pk})
     
-   
+class Order(models.Model):
+    product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE,related_name='buyer')
+    seller = models.ForeignKey(User,on_delete=models.CASCADE)
+    date_ordered = models.DateTimeField(default=timezone.now)
+    number = models.IntegerField(default=1)
+    
+  
     

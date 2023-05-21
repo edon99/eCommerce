@@ -1,9 +1,9 @@
 from typing import Optional
-from django.shortcuts import render
-from.models import Product
+from django.shortcuts import render, redirect
+from.models import Product, Order, User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from .filters import ProductFilter
 # Create your views here.
 
@@ -50,8 +50,30 @@ class ProductListView(ListView):
     def get_filter_class(self):
         return ProductFilter
     
-
+@login_required
+def OrderProduct(request):
    
+    if request.method == 'POST':
+       
+        product_id = request.POST.get('product_id')
+        product = Product.objects.get(id=product_id)
+        
+        
+        buyer_id = request.user.id
+        buyer = User.objects.get(id=buyer_id)
+        
+        
+        seller_id = product.seller_id
+        seller = User.objects.get(id=seller_id)
+        
+        
+        order = Order.objects.create(product=product, buyer=buyer, seller=seller)
+        
+        
+        return render(request, 'eCommerce/product_order.html')
+    
+    
+    return render(request, 'eCommerce/product_detail.html')
 
 class ProductDetailView(DetailView):
     model = Product

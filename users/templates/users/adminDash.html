@@ -1,4 +1,4 @@
-{% extends "eCommerce/base.html"%} 
+
 {% load static %} 
 {% block content %}
 <!DOCTYPE html>
@@ -6,8 +6,13 @@
 <head>
   <title>Admin Statistics</title>
   <link rel="stylesheet" href="{% static 'eCommerce/adminDashboard.css' %}" />
+  <link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}" />
 </head>
 <body>
+<nav class="navbar" style="justify-content: space-between;">
+  <a href="{% url 'admin-dashboard' %}">Dashboard</a>
+    <a href="{% url 'logout' %}">Logout</a>
+</nav>
     <main>
        <div class="container">
     <h2>Website Statistics</h2>
@@ -26,10 +31,15 @@
       </div>
     </div>
   </div>
-
-  <div class="container">
-    <h2>Additional Statistics</h2>
+<h2>Additional Statistics</h2>
+  <div class="container" style="display: flex; justify-content: space-evenly;">
+    
     <!-- Add your additional stats here -->
+    <canvas id="barChart" style="max-width: 400px;
+    max-height: 300px;"></canvas>
+    <canvas id="pieChart" style="max-width: 400px;
+    max-height: 300px;"></canvas>
+    
   </div>
 
   <div class="container">
@@ -43,6 +53,7 @@
           <th>Last Name</th>
           <th>Join Date</th>
           <th>Role</th>
+          <th></th>
         </tr>
         {% for user in users %}
         
@@ -53,6 +64,7 @@
             <th>{{ user.lastname }}</th>
             <th>{{ user.date_joined }}</th>
             <th>{{ user.role }}</th>
+            <th><button>Delete</button></th>
           </tr>
         {% endfor %}
       </thead>
@@ -62,22 +74,83 @@
     </table>
   </div> 
     </main>
-  
-
+    <style>
+    
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // JavaScript code to fetch and update the statistics dynamically
-    // Replace the API_URL with your actual API endpoint to retrieve the statistics
-    const API_URL = 'https://api.example.com/stats';
+    document.addEventListener('DOMContentLoaded', function() {
+            const categoriesData = JSON.parse('{{ products_nb|safe }}');
+            const labels = Object.keys(categoriesData);
+            const numbers = Object.values(categoriesData);
+            const rolesData = JSON.parse('{{ roles|safe }}');
+            const roleLabels = Object.keys(rolesData);
+            const roleNumbers = Object.values(rolesData);
 
-    fetch(API_URL)
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('usersCount').textContent = data.users;
-        document.getElementById('sellersCount').textContent = data.sellers;
-        document.getElementById('productsCount').textContent = data.products;
-      })
-      .catch(error => console.error('Error:', error));
-  </script>
+            // Bar Chart
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Products in category',
+                        data: numbers,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks:{
+                              stepSize:1
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Pie Chart
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'pie',
+                data: {
+                    labels: roleLabels,
+                    datasets: [{
+                        label: 'Users',
+                        data: roleNumbers,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                  
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 {% endblock %}

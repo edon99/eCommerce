@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,9 @@ from django.contrib.auth import authenticate, login ,logout
 from .forms import UserForm ,SellerForm , UserUpdateForm, ProfileUpdateForm
 from eCommerce.models import User
 from eCommerce.models import Product
+import matplotlib.pyplot as plt
+import io
+import urllib, base64
 # Create your views here.
 
 def signup(request):
@@ -43,7 +47,9 @@ def login_user(request):
                     
             for admin in admins :
                 if admin.username == username:
+                    user.is_authenticated == True
                     return redirect('admin-dashboard') 
+                    
             login(request, user)
             return redirect('site-home')              
         else:
@@ -114,7 +120,6 @@ class ProductListView(ListView):
         return ProductFilter
     # we can add .order_by('-date_posted') after closing pare
     
-    
 def analytics(request) :
     product = Product.objects.all()
     context = {
@@ -123,13 +128,39 @@ def analytics(request) :
     return render(request, 'users/sellerAnalytics.html', context)
 
 def admin_dash(request):
+    products_nb = Product.objects.all()
+    categories={}
+    for product in products_nb:
+        category = product.categorie
+        if category in categories:
+            categories[category] +=1
+        else:
+            categories[category] =1
+    categoriesJson = json.dumps(categories)
+
+    users = User.objects.all()
+    roles_data = {'BUYER': 0, 'SELLER': 0}
+    for user in users:
+        role = user.role
+        if role in roles_data:
+            roles_data[role] += 1
+
+    
+    roles_data_json = json.dumps(roles_data)
+    
     context = {
         'products':Product.objects.all(),
         'sellers':User.objects.filter(role="SELLER").count(),
         'users':User.objects.all().exclude(is_staff=True),
         'products_count':Product.objects.count(),
+        'products_nb':categoriesJson,
         'users_count':User.objects.count(),
+        'categories':Product.objects.values_list('categorie',flat=True).distinct(),
+        'roles':roles_data_json,
     }
+    
+
+
     return render(request, 'users/adminDash.html', context)
 
 @login_required

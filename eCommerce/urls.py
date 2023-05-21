@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView ,home
+from .views import ProductListView, ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView ,home, OrderProduct
 from django.urls import path
 from . import views
 urlpatterns = [
@@ -12,6 +12,7 @@ urlpatterns = [
     path('products/<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
     path('products/<int:pk>/delete/', ProductDeleteView.as_view(), name='product-delete'),
     path('products/new/', ProductCreateView.as_view(), name='product-create'),
+    path('products/order', views.OrderProduct, name='product-order'),
     
 
 ]

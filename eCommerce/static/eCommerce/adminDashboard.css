@@ -44,3 +44,10 @@ body {
   th {
     background-color: #f5f5f5;
   }
+/* .charts{
+  display: flex;
+  justify-content: space-between;
+}
+.charts .chart{
+  flex-basis: 50%;
+} */

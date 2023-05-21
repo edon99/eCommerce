@@ -29,6 +29,7 @@ class ProfileUpdateForm(forms.ModelForm):
      class Meta():
         model = Profile
         fields = ['image']
+
 class SellerForm(UserCreationForm):
     firstname = forms.CharField(max_length=30)
     lastname = forms.CharField(max_length=30)
@@ -46,7 +47,12 @@ class SellerForm(UserCreationForm):
             user.save()
         return user
     
-
+# class OrderForm(forms.ModelForm):
+#     product = forms.ForeignKey(Product,on_delete=models.CASCADE)
+#     buyer = forms.ForeignKey(User, on_delete=models.CASCADE,related_name='buyer')
+#     seller = forms.ForeignKey(User,on_delete=models.CASCADE)
+#     date_ordered = 
+#     number = forms.IntegerField(default=1)
     
 
 
