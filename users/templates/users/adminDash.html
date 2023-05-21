@@ -29,19 +29,55 @@
         <h3>Products</h3>
         <p id="productsCount">{{ products_count }}</p>
       </div>
+      <div class="stat">
+        <h3>Orders</h3>
+        <p id="productsCount">{{ orders_count }}</p>
+      </div>
     </div>
   </div>
-<h2>Additional Statistics</h2>
+
+  <div class="container">
+    <h2>Product prices statistics</h2>
+    <div class="stats">
+      <div class="stat">
+        <h3>Max Price</h3>
+        <p id="products_max">{{ products_max }} $</p>
+      </div>
+      <div class="stat">
+        <h3>Avg Price</h3>
+        <p id="products_avg">{{ products_avg }} $</p>
+      </div>
+      <div class="stat">
+        <h3>Min Price</h3>
+        <p id="products_min">{{ products_min }} $</p>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <h2>Orders statistics</h2>
+    <div class="stats">
+      <div class="stat">
+        <h3>Most ordered product</h3>
+        <p id="products_max">{{ most_ordered_product }} </p>
+      </div>
+      <div class="stat">
+        <h3>Seller with most orders</h3>
+        <p id="products_max">{{ seller_with_most_orders }} </p>
+      </div>
+      <div class="stat">
+        <h3>Total orders price</h3>
+        <p id="products_max">{{ total_orders_price }} $</p>
+      </div>
+    </div>
+  </div>
+  <h2>Additional Statistics</h2>
   <div class="container" style="display: flex; justify-content: space-evenly;">
-    
     <!-- Add your additional stats here -->
     <canvas id="barChart" style="max-width: 400px;
     max-height: 300px;"></canvas>
     <canvas id="pieChart" style="max-width: 400px;
     max-height: 300px;"></canvas>
-    
   </div>
-
   <div class="container">
     <h2>User Table</h2>
     <table>
@@ -68,9 +104,6 @@
           </tr>
         {% endfor %}
       </thead>
-      <tbody>
-        <!-- Populate the table dynamically using JavaScript or server-side scripting -->
-      </tbody>
     </table>
   </div> 
     </main>

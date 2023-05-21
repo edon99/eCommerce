@@ -8,11 +8,10 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from eCommerce.filters import ProductFilter
 from django.contrib.auth import authenticate, login ,logout
 from .forms import UserForm ,SellerForm , UserUpdateForm, ProfileUpdateForm
-from eCommerce.models import User
-from eCommerce.models import Product
-import matplotlib.pyplot as plt
-import io
-import urllib, base64
+from eCommerce.models import User, Product, Order
+from django.db.models import Max,Avg,Min,Count,Sum
+
+
 # Create your views here.
 
 def signup(request):
@@ -148,14 +147,22 @@ def admin_dash(request):
     
     roles_data_json = json.dumps(roles_data)
     
+    
     context = {
         'products':Product.objects.all(),
+        'orders_count':Order.objects.all().count(),
         'sellers':User.objects.filter(role="SELLER").count(),
         'users':User.objects.all().exclude(is_staff=True),
         'products_count':Product.objects.count(),
         'products_nb':categoriesJson,
         'users_count':User.objects.count(),
         'categories':Product.objects.values_list('categorie',flat=True).distinct(),
+        'products_max':Product.objects.aggregate(max_price=Max("price"))["max_price"],
+        'products_avg':Product.objects.aggregate(avg_price=Avg("price"))["avg_price"],
+        'products_min':Product.objects.aggregate(min_price=Min("price"))["min_price"],
+        'most_ordered_product':Product.objects.annotate(order_count=Count('order')).order_by('-order_count').first(),
+        'seller_with_most_orders': User.objects.filter(product__isnull=False).annotate(order_count=Count('product__order')).order_by('-order_count').first(),
+        'total_orders_price': Order.objects.aggregate(total_price=Sum('product__price'))["total_price"],
         'roles':roles_data_json,
     }
     
