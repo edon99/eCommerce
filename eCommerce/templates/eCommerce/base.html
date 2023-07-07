@@ -7,7 +7,7 @@
 <nav class="navbar">
   <a href="{% url 'sellerHome' %}">Dashboard</a>
   <a href="{% url 'seller-products' %}">My business</a>
-  <a style="display: block; margin-right: auto;" href="{% url 'seller-analytics' %}">Analytics</a>
+  <a style="display: block; margin-right: auto;" href="{% url 'seller-dashboard' %}">Analytics</a>
 
   <div class="dropdown">
     <img src="{{ user.profile.image.url }}" alt="" class="profile-image" /><div class="arrow"></div>
@@ -45,8 +45,4 @@
 
 </nav>
 {% endif %}
- {% if messages %} {% for message in messages %}
-<div class="success-message">
-  <i> {{ message }} </i>
-</div>
-{% endfor %} {% endif %} {% block content %}{% endblock %}
+ {% block content %}{% endblock %}

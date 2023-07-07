@@ -1,4 +1,4 @@
-
+{% extends "eCommerce/base.html" %}
 {% load static %} 
 {% block content %}
 <!DOCTYPE html>
@@ -6,14 +6,10 @@
 <head>
   <title>Admin Statistics</title>
   <link rel="stylesheet" href="{% static 'eCommerce/adminDashboard.css' %}" />
-  <!-- <link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}" navbar disabled psq ytrbg style for some reason
-    /> --> 
+  <link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}" />
 </head>
 <body>
-<nav class="navbar" style="justify-content: space-between;">
-  <a href="{% url 'admin-dashboard' %}">Dashboard</a>
-    <a href="{% url 'logout' %}">Logout</a>
-</nav>
+
     <main>
        <div class="container">
     <h2>Website Statistics</h2>
@@ -80,31 +76,26 @@
     max-height: 300px;"></canvas>
   </div>
   <div class="container">
-    <h2>User Table</h2>
-    <div class="search-container">
-      <input type="text" id="search-input" placeholder="Search orders..." onkeyup="searchOrders()">
-  </div>
-    <table id="products-table">
+    <h2>Order history</h2>
+    <table>
       <thead>
         <tr>
-          <th>Username</th>
-          <th>Email</th>
           <th>First Name</th>
           <th>Last Name</th>
-          <th>Join Date</th>
-          <th>Role</th>
-          <th></th>
+          <th>Email</th>
+          <th>Order Date</th>
+          <th>Product</th>
+          <th>Quantity</th>
         </tr>
         {% for user in users %}
         
         <tr>
-            <th>{{ user.username }}</th>
+            <th>{{ user.firstname }}</th>
+            <th>{{ user.lastname }}</th>
             <th>{{ user.email }}</th>
-            <th>{{ user.first_name }}</th>
-            <th>{{ user.last_name }}</th>
             <th>{{ user.date_joined }}</th>
             <th>{{ user.role }}</th>
-            <th><button>Delete</button></th>
+            <th></th>
           </tr>
         {% endfor %}
       </thead>
@@ -187,38 +178,6 @@
                 }
             });
         });
-       
-        function searchOrders() {
-            var input = document.getElementById("search-input");
-            var filter = input.value.toUpperCase();
-            var table = document.getElementById("products-table");
-            var rows = table.getElementsByTagName("tr");
-
-            for (var i = 0; i < rows.length; i++) {
-                var firstNameColumn = rows[i].getElementsByTagName("th")[0];
-                var lastNameColumn = rows[i].getElementsByTagName("th")[1];
-                var phoneNumberColumn = rows[i].getElementsByTagName("th")[2];
-                var addressColumn = rows[i].getElementsByTagName("th")[3];
-
-                var firstName = firstNameColumn.textContent || firstNameColumn.innerText;
-                var lastName = lastNameColumn.textContent || lastNameColumn.innerText;
-                var phoneNumber = phoneNumberColumn.textContent || phoneNumberColumn.innerText;
-                var address = addressColumn.textContent || addressColumn.innerText;
-
-                if (
-                    firstName.toUpperCase().indexOf(filter) > -1 ||
-                    lastName.toUpperCase().indexOf(filter) > -1 ||
-                    phoneNumber.toUpperCase().indexOf(filter) > -1 ||
-                    address.toUpperCase().indexOf(filter) > -1
-                ) {
-                    rows[i].style.display = "";
-                } else {
-                    rows[i].style.display = "none";
-                }
-            }
-        }
-    
-
     </script>
 </body>
 </html>

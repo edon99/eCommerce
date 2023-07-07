@@ -1,0 +1,91 @@
+{% extends "eCommerce/sellerBase.html"%}
+{% load static %}
+
+{% block content %}
+
+<head>
+    <title>Seller Home Page</title>
+
+    <link rel="stylesheet" href="{% static 'eCommerce/sellerOrders.css' %}">
+</head>
+
+<body>
+    <main>
+     <h1>Orders</h1>
+     <div class="orders-container">
+        <h2 class="title">Orders</h2>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search orders..." onkeyup="searchOrders()">
+        </div>
+        <table id="orders-table">
+          <thead>
+            <tr>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Phone number</th>
+              <th>Address</th>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Total</th>
+              <th>Date ordered</th>
+              <th>Delivery state</th>
+              <th>Payment state</th>
+              <th></th>
+              <th></th>
+            </tr>
+            {% for order in orders %}
+            
+            <tr>
+                <td>{{ order.firstName }}</td>
+                <td>{{ order.lastName }}</td>
+                <td>{{ order.phoneNumber }}</td>
+                <td>{{ order.address }}</td>
+                <td>{{ order.product }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>{{ order.total }} $</td>
+                <td>{{ order.date_ordered }}</td>
+                <td>{{ order.delivery_state }}</td>
+                <td>{{ order.payment_state }}</td>
+                <td><a href="{% url 'order-update' order.id %}">Update</a></th>
+                <td><a href="{% url 'order-delete' order.id %}">Delete</a></th>
+              </tr>
+            {% endfor %}
+          </thead>
+        </table>
+    </div>
+    </main>
+
+</body>
+ <script>
+        function searchOrders() {
+            var input = document.getElementById("search-input");
+            var filter = input.value.toUpperCase();
+            var table = document.getElementById("orders-table");
+            var rows = table.getElementsByTagName("tr");
+
+            for (var i = 0; i < rows.length; i++) {
+                var firstNameColumn = rows[i].getElementsByTagName("th")[0];
+                var lastNameColumn = rows[i].getElementsByTagName("th")[1];
+                var phoneNumberColumn = rows[i].getElementsByTagName("th")[2];
+                var addressColumn = rows[i].getElementsByTagName("th")[3];
+
+                var firstName = firstNameColumn.textContent || firstNameColumn.innerText;
+                var lastName = lastNameColumn.textContent || lastNameColumn.innerText;
+                var phoneNumber = phoneNumberColumn.textContent || phoneNumberColumn.innerText;
+                var address = addressColumn.textContent || addressColumn.innerText;
+
+                if (
+                    firstName.toUpperCase().indexOf(filter) > -1 ||
+                    lastName.toUpperCase().indexOf(filter) > -1 ||
+                    phoneNumber.toUpperCase().indexOf(filter) > -1 ||
+                    address.toUpperCase().indexOf(filter) > -1
+                ) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+
+{% endblock %}

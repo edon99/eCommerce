@@ -7,6 +7,11 @@
   <title>Seller Sign Up Page</title>
 </head>
 <body>
+	{% if messages %} {% for message in messages %}
+	<div class="success-message">
+	  <i> {{ message }} </i>
+	</div>
+	{% endfor %} {% endif %}
 	<div class="container">
 		<h1 class="title">Seller Sign Up</h1>
 		<form method="POST" class="signup-form">
@@ -23,11 +28,11 @@
 			  <div class="form-row">
 			  <div class="form-group">
 				<label for="{{ form.first_name.id_for_label }}">First Name</label>
-				{{ form.firstname }}
+				{{ form.first_name }}
 			  </div>
 			  <div class="form-group">
 				<label for="{{ form.last_name.id_for_label }}">Last Name</label>
-				{{ form.lastname }}
+				{{ form.last_name }}
 			  </div>
 			</div>
 			<div class="form-group">

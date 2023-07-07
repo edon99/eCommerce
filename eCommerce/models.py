@@ -13,12 +13,10 @@ class User(AbstractUser):
         ADMIN ="ADMIN", 'Admin'
         BUYER ="BUYER", 'Buyer'
         SELLER ="SELLER", 'Seller'
-
     base_role = Role.BUYER
     role = models.CharField(max_length=50, choices=Role.choices, default=base_role)
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
-
+    # first_name = models.CharField(max_length=30)
+    # last_name = models.CharField(max_length=30)
     def save(self, *args, **kwargs):
             return super().save(*args, **kwargs)
     
@@ -46,8 +44,33 @@ class Order(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     buyer = models.ForeignKey(User, on_delete=models.CASCADE,related_name='buyer')
     seller = models.ForeignKey(User,on_delete=models.CASCADE)
+    firstName = models.CharField(max_length=100, null=True)
+    lastName = models.CharField(max_length=100, null=True)
     date_ordered = models.DateTimeField(default=timezone.now)
-    number = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=1)
+    total = models.IntegerField(default=0)
+    address = models.CharField(max_length=200, null=True)
+    phoneNumber = models.IntegerField()
+    class OrderState(models.TextChoices):
+        ON_DELIVERY ="ON DELIVERY",'On Delivery'
+        UNPAID ="UNPAID", 'Unpaid'
+        PAID ="PAID", 'Paid'
+        CANCELED ="CANCELED", 'Canceled'
+    base_state = OrderState.UNPAID
+    payment_state = models.CharField(max_length=50, choices=OrderState.choices, default=base_state)
+    class Delivery(models.TextChoices):
+        SHIPPED ="SHIPPED", 'Shipped'
+        DELIVERED ="DELIVERED", 'Delivered'
+        CANCELED ="CANCELED", 'Canceled'
+        PENDING= "PENDING", 'Pending'
+    base_delivery_state = Delivery.PENDING
+    delivery_state  = models.CharField(max_length=50, choices=Delivery.choices, default=base_delivery_state)
+
+    
+
+    def get_absolute_url(self):
+         return reverse('product-order-confirm',kwargs={'pk':self.pk})
+    
     
   
     

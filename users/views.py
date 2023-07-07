@@ -1,10 +1,9 @@
 import json
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.detail import SingleObjectMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import ListView,UpdateView,DeleteView
 from eCommerce.filters import ProductFilter
 from django.contrib.auth import authenticate, login ,logout
 from .forms import UserForm ,SellerForm , UserUpdateForm, ProfileUpdateForm
@@ -22,7 +21,6 @@ def signup(request):
             form.save()
             messages.success(request, f'Your account has been created!')
             return redirect('login')
-
         
     else:       
         form = UserForm() 
@@ -52,7 +50,7 @@ def login_user(request):
             login(request, user)
             return redirect('site-home')              
         else:
-            messages.success(request,f'There was an error')
+            messages.error(request, 'Invalid username or password.')
             return redirect('login')
     
     else:
@@ -62,7 +60,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('site-home')
+    return redirect('login')
 
 def sellerSignup(request):
     data = request.POST.copy()
@@ -78,13 +76,53 @@ def sellerSignup(request):
             return redirect('login')
     else:       
         form = SellerForm() 
+        
     return render(request, 'users/sellerSignup.html',{'form':form})
 
 def sellerHome(request):
+    total_revenue = Order.objects.filter(seller_id=request.user).aggregate(total_sum=Sum('total')).get('total_sum')
+    revenue = total_revenue or 0
     context={
-       'products':Product.objects.filter(seller_id=request.user)
+        'products_count':Product.objects.filter(seller_id=request.user).count(),
+        'products':Product.objects.filter(seller_id=request.user)[:3],
+        'orders_count':Order.objects.filter(seller=request.user).count(),
+        'orders':Order.objects.filter(seller=request.user)[:5],
+        'revenue':revenue
     }
     return render(request, 'users/sellerHome.html', context)
+
+def sellerOrders(request):
+    context={
+        'orders':Order.objects.filter(seller=request.user),
+    }
+    return render(request, 'users/sellerOrders.html', context)
+
+def OrderUpdate(request,pk):
+    order = get_object_or_404(Order, id=pk)
+    if request.method=='POST':
+         delivery_state = request.POST.get('delivery-state')
+         payment_state = request.POST.get('payment-state')
+
+         order.delivery_state = delivery_state
+         order.payment_state = payment_state
+         order.save()
+
+         return redirect('seller-orders')
+    context = {
+        'order': order
+    }
+    return render(request, 'users/orderUpdate.html', context)
+
+class OrderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Order
+    # change this later to that users products list
+    success_url = '/sellerOrders/'
+    def test_func(self):
+        order = self.get_object()
+        if self.request.user == order.seller:
+            return True
+        return False
+
 
 class ProductListView(ListView):
     model = Product
@@ -119,12 +157,46 @@ class ProductListView(ListView):
         return ProductFilter
     # we can add .order_by('-date_posted') after closing pare
     
-def analytics(request) :
-    product = Product.objects.all()
+def analytics(request):
+    products_nb = Product.objects.all()
+    categories={}
+    for product in products_nb:
+        category = product.categorie
+        if category in categories:
+            categories[category] +=1
+        else:
+            categories[category] =1
+    categoriesJson = json.dumps(categories)
+
+    users = User.objects.all()
+    roles_data = {'BUYER': 0, 'SELLER': 0}
+    for user in users:
+        role = user.role
+        if role in roles_data:
+            roles_data[role] += 1
+
+    
+    roles_data_json = json.dumps(roles_data)
+    
+    
     context = {
-        'products':product
+        'products':Product.objects.all(),
+        'orders_count':Order.objects.all().count(),
+        'sellers':User.objects.filter(role="SELLER").count(),
+        'users':User.objects.all().exclude(is_staff=True),
+        'products_count':Product.objects.count(),
+        'products_nb':categoriesJson,
+        'users_count':User.objects.count(),
+        'categories':Product.objects.values_list('categorie',flat=True).distinct(),
+        'products_max':Product.objects.aggregate(max_price=Max("price"))["max_price"],
+        'products_avg':Product.objects.aggregate(avg_price=Avg("price"))["avg_price"],
+        'products_min':Product.objects.aggregate(min_price=Min("price"))["min_price"],
+        'most_ordered_product':Product.objects.annotate(order_count=Count('order')).order_by('-order_count').first(),
+        'seller_with_most_orders': User.objects.filter(product__isnull=False).annotate(order_count=Count('product__order')).order_by('-order_count').first(),
+        'total_orders_price': Order.objects.aggregate(total_price=Sum('product__price'))["total_price"],
+        'roles':roles_data_json,
     }
-    return render(request, 'users/sellerAnalytics.html', context)
+    return render(request, 'users/sellerDashboard.html', context)
 
 def admin_dash(request):
     products_nb = Product.objects.all()
@@ -165,8 +237,6 @@ def admin_dash(request):
         'total_orders_price': Order.objects.aggregate(total_price=Sum('product__price'))["total_price"],
         'roles':roles_data_json,
     }
-    
-
 
     return render(request, 'users/adminDash.html', context)
 

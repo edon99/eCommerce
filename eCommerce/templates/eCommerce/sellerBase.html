@@ -1,33 +1,28 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}">
-{% if user.role == 'SELLER' %}
-    <nav>
+<link rel="stylesheet" href="{% static 'eCommerce/sidebar.css' %}">
 
-        <a href="{% url 'sellerHome' %}">Dashboard</a>
-        <a href="{% url 'seller-products' %}">My business</a>
-        <a href="#">Analytics</a>
-        
-        {% if user.is_authenticated  %}
-            <img src="{{ user.profile.image.url }}" alt="" style="height: 40px; width: 40px;">
-            <a href="{% url 'profile' %}">Profile</a>
-            <a href="{% url 'logout' %}">Logout</a>
-            
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'signup' %}">SignUp</a>
-        {% endif %}
-    </nav>
-{% else %}
-<h1>shush</h1>
-{% endif %}
+<div class="sidebar">
+    <div class="profile">
+        <img src="{{ user.profile.image.url }}" alt="" style="height: 40px; width: 40px;">
+        <a href="{% url 'profile' %}">Profile</a> 
+    </div>
+    <a href="{% url 'sellerHome' %}">Dashboard</a>
+    <a href="{% url 'seller-products' %}">Products</a>
+    <a href="{% url 'seller-orders' %}">Orders</a>
+    <a href="#">Analytics</a>
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
 
-{% if messages %}
-{% for message in messages %}
+<div class="main-content">
+    {% if messages %}
+    {% for message in messages %}
     <div class="success-message">
         <i> {{ message }} </i>
-    </div >
-{%  endfor %}
-{% endif %}
+    </div>
+    {% endfor %}
+    {% endif %}
 
-{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
+</div>
+
 

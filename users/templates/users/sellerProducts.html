@@ -1,11 +1,11 @@
-{% extends "eCommerce/base.html"%}
+{% extends "eCommerce/sellerBase.html"%}
 {% load static %}
 
 {% block content %}
 <head>
     <title>Products</title>
 	
-    <link rel="stylesheet" href="{% static 'eCommerce/product.css' %}">
+    <link rel="stylesheet" href="{% static 'eCommerce/sellerProducts.css' %}">
 </head>
 <body>
 
@@ -26,8 +26,7 @@
             <p class="category">Category: {{ product.categorie }}</p>
             <img src="{{ product.image.url }}" alt="Product Image">
             <p class="price">{{ product.price }} $</p></p>
-            <p class="seller">Seller: {{ product.seller }}</p>
-            <p class="seller">Created at : {{ product.date_created}}</p>
+            <p class="seller">Posted : {{ product.date_created}}</p>
         </div>
     {% endfor %}
 </div>

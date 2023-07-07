@@ -1,0 +1,48 @@
+body {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+}
+
+.sidebar {
+  width: 150px;
+  height: 100%;
+  background: #212121;
+  padding: 20px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile img {
+  height: 40px;
+  width: 40px;
+  margin-bottom: 10px;
+}
+
+.sidebar a {
+  display: block;
+  margin-bottom: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.main-content {
+  margin-left: 200px; /* Adjust the margin to create space for the sidebar */
+  padding: 20px;
+  
+}
+
+.success-message {
+  background-color: #c1f3d7;
+  padding: 10px;
+  margin-bottom: 10px;
+}

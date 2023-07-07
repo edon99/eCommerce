@@ -10,14 +10,22 @@
 
     <div class="container">
 		<h1 class="title">Login</h1>
+		{% if messages %}
+  			<ul class="messages">
+    		{% for message in messages %}
+      			<li class="error">{{ message }}</li>
+    		{% endfor %}
+  			</ul>
+		{% endif %}
 		<form method="POST" class="signup-form">
 		  {% csrf_token %}
 		  <fieldset class="form-group">
 			<label for="username" class="label">Username:</label>
 			<input type="text" id="username" name="username" class="input">
-			
+                <span class="form-error"> {{ form.username.errors }}</span>
 			<label for="password" class="label">Password:</label>
 			<input type="password" id="password" name="password" class="input">
+			<span class="form-error">{{ form.password.errors }}</span>
 			
 			<button style="margin-top: 10px;" type="submit" class="button">Login</button>
 		  </fieldset>

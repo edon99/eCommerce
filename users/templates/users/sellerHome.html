@@ -1,31 +1,124 @@
-{% extends "eCommerce/base.html"%}
+{% extends "eCommerce/sellerBase.html"%}
 {% load static %}
 
 {% block content %}
+
 <head>
     <title>Seller Home Page</title>
 
-    <link rel="stylesheet" href="{% static 'eCommerce/product.css' %}">
+    <link rel="stylesheet" href="{% static 'eCommerce/sellerHome.css' %}">
 </head>
+
 <body>
-      
-    <h1 style="margin-top: 30px;">My Products</h1>
-    <div class="new-product-link"><a class="" href="{% url 'product-create' %}">New Product</a> </div>
-    
-    
-    <div class="products">
-      {% for product in products %}
-           <div class="product-container">
-               <a href="{% url 'product-detail' product.id %}">{{ product.title }}</a>
-               <p class="category">Category: {{ product.categorie }}</p>
-               <img src="{{ product.image.url }}" alt="Product Image">
-               <p class="price">{{ product.price }} $</p></p>
-               <p class="seller">Seller: {{ product.seller }}</p>
-               <p class="seller">Created at : {{ product.date_created}}</p>
-           </div>
-       {% endfor %}
-   </div>
-       
+    <main>
+        <h1 style="margin-top: 30px;">Dashboard</h1>
+        <div class="container">
+            <h2 class="title">Overview</h1>
+                <div class="stats">
+                    <div class="stat">{{ orders_count }}
+                        <div class="text">Orders</div>
+                    </div>
+
+                    <div class="stat">{{ revenue }} $
+                        <div class="text">Revenue</div>
+                    </div>
+
+                    <div class="stat">{{ products_count }}
+                        <div class="text">Products</div>
+                    </div>
+
+                    <div class="stat">987
+                        <div class="text"></div>
+                    </div>
+
+                </div>
+                <div class="texts">
+                </div>
+
+        </div>
+
+        <div class="orders-container">
+            <h2 class="title">Orders</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                  <th>date_ordered</th>
+                </tr>
+                {% for order in orders %}
+                
+                <tr>
+                    <th>{{ order.firstName }}</th>
+                    <th>{{ order.lastName }}</th>
+                    <th>{{ order.product }}</th>
+                    <th>{{ order.quantity }}</th>
+                    <th>{{ order.total }} $</th>
+                    <th>{{ order.date_ordered }}</th>
+                    
+                  </tr>
+                {% endfor %}
+              </thead>
+            </table>
+            <div class="new-product-link" style="margin-left: auto;
+            margin-right: 10px; margin-top: 5px;"><a href="{% url 'seller-orders' %}">All Orders</a> </div>
+        </div>
+
+        <div class="products-container">
+            <h2 class="title">Products</h1>
+                <div class="new-product-link"><a class="" href="{% url 'product-create' %}">New Product</a> </div>
+                <div class="products-wrap">
+                    {% for product in products %}
+                    <div class="product">
+                        <a href="{% url 'product-detail' product.id %}">{{ product.title }}</a>
+                        <p class="category">Category: {{ product.categorie }}</p>
+                        <img src="{{ product.image.url }}" alt="Product Image">
+                        <p class="price">{{ product.price }} $</p>
+                        </p>
+                        <p class="seller">Created at : {{ product.date_created}}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="new-product-link" style=" margin-left: auto;
+                margin-right: 10px; margin-top: 5px;"><a href="{% url 'seller-products' %}">All Products</a> </div>
+        </div>
+
+    </main>
+
 </body>
+<script>
+    function searchOrders() {
+        var input = document.getElementById("search-input");
+        var filter = input.value.toUpperCase();
+        var table = document.getElementById("orders-table");
+        var rows = table.getElementsByTagName("tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var firstNameColumn = rows[i].getElementsByTagName("th")[0];
+            var lastNameColumn = rows[i].getElementsByTagName("th")[1];
+            var phoneNumberColumn = rows[i].getElementsByTagName("th")[2];
+            var addressColumn = rows[i].getElementsByTagName("th")[3];
+
+            var firstName = firstNameColumn.textContent || firstNameColumn.innerText;
+            var lastName = lastNameColumn.textContent || lastNameColumn.innerText;
+            var phoneNumber = phoneNumberColumn.textContent || phoneNumberColumn.innerText;
+            var address = addressColumn.textContent || addressColumn.innerText;
+
+            if (
+                firstName.toUpperCase().indexOf(filter) > -1 ||
+                lastName.toUpperCase().indexOf(filter) > -1 ||
+                phoneNumber.toUpperCase().indexOf(filter) > -1 ||
+                address.toUpperCase().indexOf(filter) > -1
+            ) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+</script>
 
 {% endblock %}

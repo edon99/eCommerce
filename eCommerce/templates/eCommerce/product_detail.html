@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="product-container">
-    <form action="{% url 'product-order' %}" id="order-form" method="POST">
+    
         {% csrf_token %}
         <h1>{{ object.title }}</h1>
         <input type="hidden" name="product_id" value="{{ object.id }}">
@@ -18,9 +18,10 @@
         <p class="price">{{ object.price }} $</p></p>
         <p name="seller" class="seller">Seller: {{ object.seller }}</p>
         {% if user.is_authenticated and user.role == 'BUYER' %}
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Order Now</button> 
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Add to cart</button> 
+        <a href="{% url 'order-create' object.id %}"><button type="button" class="btn btn-primary">Order now</button> </a>
       {% endif %}
-    </form>
+    
         {% if object.seller == user %}
           <a class="update" href="{% url 'product-update' object.id %}">Update</a>
           <a class="delete" href="{% url 'product-delete' object.id %}">Delete</a>
@@ -30,17 +31,17 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="confirmModalLabel">Confirm Order</h5>
+            
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
-              Are you sure you want to place this order?
+              Are you sure you want to add this item to cart?
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
               <button type="button" class="btn btn-primary" id="confirmOrderBtn">Confirm</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
           </div>
         </div>
@@ -145,7 +146,7 @@
   
     confirmOrderBtn.addEventListener('click', function () {
       modal.style.display = 'none';
-      orderForm.submit();
+      // orderForm.submit();
     });
   
     cancelButton.addEventListener('click', function () {

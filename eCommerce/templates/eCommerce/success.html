@@ -1,0 +1,64 @@
+{% extends "eCommerce/base.html"%} 
+{% load static %} 
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Confirmation</title>
+  <style>
+    .center-container {
+      
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 70vh;
+    }
+
+    .checkmark {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #0ea70e;
+      position: relative;
+      animation: checkmark 0.6s;
+    }
+
+    .checkmark::before {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 30%;
+      width: 30px;
+      height: 60px;
+      border-bottom: 6px solid white;
+      border-right: 6px solid white;
+      transform: rotate(45deg);
+    }
+
+    @keyframes checkmark {
+      0% {
+        transform: scale(0);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+{% if messages %} {% for message in messages %}
+<div class="success-message">
+  <i> {{ message }} </i>
+</div>
+{% endfor %} {% endif %}
+<body>
+    <div class="center-container">
+        <div class="checkmark"></div>
+  <h2>Order Confirmed!</h2>
+  <p>To track your order, you can check Your Orders.</p>
+  <p><a href="{% url 'site-products' %}">Continue Shopping</a></p>
+    </div>
+  
+</body>
+</html>
+{% endblock %}
