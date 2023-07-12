@@ -1,0 +1,52 @@
+
+ 
+    body {
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .containers{
+      width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    #tabting{
+        font-family: 'Montserrat', sans-serif;
+    }
+    /* Tab styles */
+    .tab {
+      display: none;
+      padding: 20px;
+    }
+    
+    /* Active tab style */
+    .active {
+      display: block;
+    }
+    
+    /* Tab navigation styles */
+    .tabnav {
+      display: flex;
+      justify-content: space-between;
+      background-color: #f1f1f1;
+      border-radius: 10px 10px 0 0;
+      overflow: hidden;
+    }
+    
+    .tabnav button {
+      background-color: transparent;
+      border: none;
+      padding: 15px 20px;
+      font-size: 16px;
+      color: #333;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .tabnav button:hover {
+      background-color: #e1e1e1;
+    }
+ 

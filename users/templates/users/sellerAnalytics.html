@@ -1,0 +1,238 @@
+{% extends "eCommerce/sellerBase.html"%}
+{% load static %}
+
+{% block content %}
+
+<head>
+  <title>Analytics Page</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="{% static 'eCommerce/sellerAnalytics.css' %}">
+</head>
+
+
+</head>
+
+<body>
+  <h1 style="margin-top: 30px;">Analytics</h1>
+  <div class="container">
+    <div class="tabnav">
+      <button id="tabting" onclick="changeTab(0)">General</button>
+      <button id="tabting" onclick="changeTab(1)">Products</button>
+      <button id="tabting" onclick="changeTab(2)">Orders</button>
+    </div>
+    <div id="tabContent" class="tab active">
+      <h2>General</h2>
+      <div class="flex-container">
+        <div class="chart-container">
+          <h3>Best Selling Months</h3>
+          <canvas id="salesChart"></canvas>
+        </div>
+        <div class="list-container">
+          <h3>Other</h3>
+          <ul class="list">
+            <li>Number of Orders : {{ orders_count }}</li>
+            <li>Number of Products : {{ products_count }}</li>
+            <li>Number of Customers : {{ customers }}</li>
+            <li>Total Revenue : {{ revenue }} $</li>
+          </ul>
+        </div>
+      </div>
+      <p>Content for Orders tab goes here...</p>
+    </div>
+    <div id="tabContent" class="tab">
+      <h2>Products</h2>
+      <div class="flex-container">
+        <div class="chart-container">
+          <h3>Most ordered products</h3>
+          <canvas class="productChart" id="productChart"></canvas>
+        </div>
+        <div class="list-container">
+          <h3>Most expensive products</h3>
+          <ul class="list">
+            {% for prod in page_obj_expensive %}
+            <li>{{ prod.title }} : {{ prod.price }} $</li>
+            {% endfor %}
+          </ul>
+          {% if page_obj_expensive.has_other_pages %}
+          <div class="pagination">
+            {% if page_obj_expensive.has_previous %}
+            <a href="?page_expensive={{ page_obj_expensive.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span class="current-page">{{ page_obj_expensive.number }}</span>
+            {% if page_obj_expensive.has_next %}
+            <a href="?page_expensive={{ page_obj_expensive.next_page_number }}">Next</a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <p>Content for Products tab goes here...</p>
+    </div>
+    <div id="tabContent" class="tab ">
+      <h2>Orders</h2>
+      <div class="flex-container">
+        <div class="chart-container">
+          <h3>Order Distribution by Category</h3>
+          <canvas id="orderChart"></canvas>
+        </div>
+        <div class="list-container">
+          <h3>Highest Total Revenue Orders</h3>
+          <ul class="list">
+            {% for ord in page_obj_highest_orders %}
+            <li>{{ ord.product }} : {{ ord.total }} $</li>
+            {% endfor %}
+          </ul>
+          {% if page_obj_highest_orders.has_other_pages %}
+          <div class="pagination">
+            {% if page_obj_highest_orders.has_previous %}
+            <a id="link" href="?page_highest_orders={{ page_obj_highest_orders.previous_page_number }}">Previous</a>
+            {% endif %}
+            <span id="link" class="current-page">{{ page_obj_highest_orders.number }}</span>
+            {% if page_obj_highest_orders.has_next %}
+            <a href="?page_highest_orders={{ page_obj_highest_orders.next_page_number }}">Next</a>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      <p>Content for Orders tab goes here...</p>
+    </div>
+  </div>
+  <div class="click-container">
+    <h1 style="margin-top: 30px;">Clicks</h1>
+  </div>
+
+  <script>
+    function changeTab(tabIndex) {
+      var tabs = document.getElementsByClassName('tab');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+      tabs[tabIndex].classList.add('active');
+      
+      // Store the active tab index in session storage
+      sessionStorage.setItem('activeTabIndex', tabIndex);
+    }
+  
+    // Retrieve the active tab index from session storage
+    var activeTabIndex = sessionStorage.getItem('activeTabIndex');
+    if (activeTabIndex !== null) {
+      // Set the corresponding tab as active
+      var tabs = document.getElementsByClassName('tab');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+      tabs[activeTabIndex].classList.add('active');
+    }
+  
+    const productData = {
+      labels: [
+        {% for product in top_products %}
+        "{{ product.title }}",
+        {% endfor %}
+      ],
+      datasets: [
+        {
+          label: 'Number of Orders',
+          data: [
+            {% for product in top_products %}
+            {{ product.order_count }},
+            {% endfor %}
+          ],
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }
+      ]
+    };
+  
+    const ctx = document.getElementById('productChart').getContext('2d');
+    const productChart = new Chart(ctx, {
+      type: 'bar',
+      data: productData,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            precision: 0
+          }
+        }
+      }
+    });
+  
+    const orderData = {
+      labels: [
+        {% for category in order_distribution_by_category %}
+        "{{ category.product__categorie }}",
+        {% endfor %}
+      ],
+      datasets: [
+        {
+          label: 'Order Count',
+          data: [
+            {% for category in order_distribution_by_category %}
+            {{ category.order_count }},
+            {% endfor %}
+          ],
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 1
+        }
+      ]
+    };
+  
+    const ctx2 = document.getElementById('orderChart').getContext('2d');
+    const orderChart = new Chart(ctx2, {
+      type: 'bar',
+      data: orderData,
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            precision: 0
+          }
+        }
+      }
+    });
+    const salesData = {
+  labels: [
+    {% for month in best_selling_months %}
+      "{{ month.month }}",
+    {% endfor %}
+  ],
+  datasets: [
+    {
+      label: 'Total Sales',
+      data: [
+        {% for month in best_selling_months %}
+          {{ month.total_sales }},
+        {% endfor %}
+      ],
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1
+    }
+  ]
+};
+
+const ctx3 = document.getElementById('salesChart').getContext('2d');
+const salesChart = new Chart(ctx3, {
+  type: 'bar',
+  data: salesData,
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        precision: 0
+      }
+    }
+  }
+});
+
+
+  </script>
+  
+</body>
+
+
+{% endblock %}

@@ -19,6 +19,7 @@
     <div class="submit-btn"><button type="submit">Apply Filters</button></div>
 </form>
 
+<div class="new-product-link"><a class="" href="{% url 'product-create' %}">New Product</a> </div>
     <div class="products">
    {% for product in products %}
         <div class="product-container">

@@ -1,4 +1,5 @@
 import json
+from django.core.paginator import Paginator
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,8 @@ from django.contrib.auth import authenticate, login ,logout
 from .forms import UserForm ,SellerForm , UserUpdateForm, ProfileUpdateForm
 from eCommerce.models import User, Product, Order
 from django.db.models import Max,Avg,Min,Count,Sum
+from django.db.models.functions import ExtractMonth
+from django.db.models import Sum
 
 
 # Create your views here.
@@ -90,6 +93,57 @@ def sellerHome(request):
         'revenue':revenue
     }
     return render(request, 'users/sellerHome.html', context)
+
+def sellerAnalytics(request):
+    top_products = Product.objects.filter(seller=request.user) \
+        .annotate(order_count=Count('order')) \
+        .order_by('-order_count')[:5]
+
+    most_expensive_products = Product.objects.filter(seller=request.user) \
+        .order_by('-price')[:5]
+
+    paginator_expensive = Paginator(most_expensive_products, 4)
+    page_number_expensive = request.GET.get('page_expensive')
+    page_obj_expensive = paginator_expensive.get_page(page_number_expensive)
+
+    highest_orders = Order.objects.filter(seller=request.user) \
+        .order_by('-total')
+
+    paginator_highest_orders = Paginator(highest_orders, 4)
+    page_number_highest_orders = request.GET.get('page_highest_orders')
+    page_obj_highest_orders = paginator_highest_orders.get_page(page_number_highest_orders)
+
+    order_distribution_by_category = Order.objects.filter(seller=request.user) \
+        .values('product__categorie') \
+        .annotate(order_count=Count('id')) \
+        .order_by('-order_count')
+
+    best_selling_months = Order.objects.annotate(month=ExtractMonth('date_ordered')) \
+        .values('month') \
+        .annotate(total_sales=Sum('total')) \
+        .order_by('-total_sales')
+
+    total_revenue = Order.objects.filter(seller_id=request.user).aggregate(total_sum=Sum('total')).get('total_sum')
+    revenue = total_revenue or 0
+    
+    context = {
+        'products_count': Product.objects.filter(seller_id=request.user).count(),
+        'top_products': top_products,
+        'most_expensive_products': most_expensive_products,
+        'page_obj_expensive': page_obj_expensive,
+        'highest_orders': highest_orders,
+        'page_obj_highest_orders': page_obj_highest_orders,
+        'order_distribution_by_category': order_distribution_by_category,
+        'best_selling_months': best_selling_months,
+        'products_count': Product.objects.filter(seller_id=request.user).count(),
+        'orders_count': Order.objects.filter(seller=request.user).count(),
+        'revenue': revenue,
+        'customers':Order.objects.filter(product__seller=request.user).values('buyer').distinct().count()
+
+    }
+
+    return render(request, 'users/sellerAnalytics.html', context)
+
 
 def sellerOrders(request):
     context={
