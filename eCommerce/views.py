@@ -7,7 +7,7 @@ import stripe
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from .models import Product, Order, User
+from .models import Product, Order, User,Notification
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
@@ -136,10 +136,12 @@ class OrderCreateView(CreateView):
 def Payment(request,pk, order_id):
     order = Order.objects.get(id=order_id)
     product = Product.objects.get(id=pk)
+    seller = order.seller.id
     stripe = settings.STRIPE_PUBLISHABLE_KEY
 
    
-    return render(request,'eCommerce/order_payment.html',context={'order':order,'product':product,'STRIPE_PUBLIC_KEY':stripe})
+
+    return render(request,'eCommerce/order_payment.html',context={'order':order,'product':product,'seller':seller,'STRIPE_PUBLIC_KEY':stripe})
 
 
 
@@ -160,11 +162,21 @@ class ProductUpdateView(LoginRequiredMixin,UserPassesTestMixin ,UpdateView):
         return False
     
 class SuccessView(TemplateView):
-    template_name ="eCommerce/success.html"
+    template_name = "eCommerce/success.html"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        seller = User.objects.get(id=self.kwargs['pk'])
+        
+
+        Notification.objects.create(receiver=seller, notification="You have Received a new Order")
+        
+        # Customize the notification content and other details as per your requirements
+
         messages.success(self.request, 'Your order has been confirmed!')
         return context
+
     
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product

@@ -69,14 +69,10 @@ class Order(models.Model):
          return reverse('product-order-confirm',kwargs={'pk':self.pk})
     
 class Notification(models.Model):
-    receiver : models.ForeignKey(User,on_delete=models.CASCADE)
-    notification : models.CharField(max_length=300)
-    time : models.DateTimeField(default=timezone.now)
-    class Read(models.TextChoices):
-        READ ="READ", 'Read'
-        UNREAD ="UNREAD", 'Unread'
-    base_read_state = Read.UNREAD
-    read_state : models.CharField(max_length=10,choices=Read.choices,default=base_read_state)
+    receiver = models.ForeignKey(User,on_delete=models.CASCADE,default=None)
+    notification = models.CharField(max_length=300,null=True)
+    time = models.DateTimeField(default=timezone.now)
+    read_state = models.BooleanField(default=False)
      
     
     

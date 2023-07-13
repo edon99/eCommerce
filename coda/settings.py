@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'channels'
+
     
 ]
 
@@ -68,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'eCommerce.context_processors.notifications',
             ],
         },
     },
@@ -155,4 +156,7 @@ URL ='/media/'
 
 STRIPE_SECRET_KEY='sk_test_51L6nDbHsX0BypY7b1man3c9F9JRZyR85FdZQlUVOOInXOcnppAPggCX8xJnFiw9NiRH8N6OFFKy75IEENjrxvaku00Ol19IMOW'
 STRIPE_PUBLISHABLE_KEY='pk_test_51L6nDbHsX0BypY7bu92FsSNXMH5jqDOTEgvGBgtX5rIS4lNLMAVD1xDhp513l7XQlftLijcTJkODjR5O3LQJFfQP00eiVXCuBU'
+
+
+
 

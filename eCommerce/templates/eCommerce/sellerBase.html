@@ -3,8 +3,20 @@
 
 <div class="sidebar">
     <div class="profile">
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+            <span class="badge">{{ notifications_count }}</span>
+            <div class="notification-list">
+              <ul>
+                {% for notification in notifications %}
+                <li>{{ notification.notification }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
         <img src="{{ user.profile.image.url }}" alt="" style="height: 40px; width: 40px;">
         <a href="{% url 'profile' %}">Profile</a> 
+        
     </div>
     <a href="{% url 'sellerHome' %}">Dashboard</a>
     <a href="{% url 'seller-products' %}">Products</a>

@@ -8,7 +8,7 @@ from django.views.generic import ListView,UpdateView,DeleteView
 from eCommerce.filters import ProductFilter
 from django.contrib.auth import authenticate, login ,logout
 from .forms import UserForm ,SellerForm , UserUpdateForm, ProfileUpdateForm
-from eCommerce.models import User, Product, Order
+from eCommerce.models import User, Product, Order, Notification
 from django.db.models import Max,Avg,Min,Count,Sum
 from django.db.models.functions import ExtractMonth
 from django.db.models import Sum
@@ -67,6 +67,8 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
+
+
 def sellerSignup(request):
     data = request.POST.copy()
     data['role']="SELLER"
@@ -88,6 +90,7 @@ def sellerHome(request):
     total_revenue = Order.objects.filter(seller_id=request.user).aggregate(total_sum=Sum('total')).get('total_sum')
     revenue = total_revenue or 0
     context={
+       
         'products_count':Product.objects.filter(seller_id=request.user).count(),
         'products':Product.objects.filter(seller_id=request.user)[:3],
         'orders_count':Order.objects.filter(seller=request.user).count(),
