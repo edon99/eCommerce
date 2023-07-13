@@ -30,9 +30,23 @@
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
-    font-size: 16px;
+    font-size: 14px;
   }
-
+  a.link {
+    color: white;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    background-color: black;
+  }
+  
+  a.link:hover {
+    color: #f1f1f1;
+    background-color: #333333;
+    transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  }
+  
 
   th {
     background-color: #f5f5f5;

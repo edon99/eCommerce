@@ -51,15 +51,14 @@
                   <th>Total</th>
                   <th>date_ordered</th>
                 </tr>
-                {% for order in orders %}
-                
+                {% for order in orders %}      
                 <tr>
-                    <th>{{ order.firstName }}</th>
-                    <th>{{ order.lastName }}</th>
-                    <th>{{ order.product }}</th>
-                    <th>{{ order.quantity }}</th>
-                    <th>{{ order.total }} $</th>
-                    <th>{{ order.date_ordered }}</th>
+                    <td>{{ order.firstName }}</td>
+                    <td>{{ order.lastName }}</td>
+                    <td>{{ order.product }}</td>
+                    <td>{{ order.quantity }}</td>
+                    <td>{{ order.total }} $</td>
+                    <td>{{ order.date_ordered }}</td>
                     
                   </tr>
                 {% endfor %}

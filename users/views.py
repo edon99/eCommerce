@@ -12,6 +12,8 @@ from eCommerce.models import User, Product, Order
 from django.db.models import Max,Avg,Min,Count,Sum
 from django.db.models.functions import ExtractMonth
 from django.db.models import Sum
+from django.utils import timezone
+
 
 
 # Create your views here.
@@ -89,7 +91,7 @@ def sellerHome(request):
         'products_count':Product.objects.filter(seller_id=request.user).count(),
         'products':Product.objects.filter(seller_id=request.user)[:3],
         'orders_count':Order.objects.filter(seller=request.user).count(),
-        'orders':Order.objects.filter(seller=request.user)[:5],
+        'orders':Order.objects.filter(seller=request.user).order_by('-date_ordered')[:5],
         'revenue':revenue
     }
     return render(request, 'users/sellerHome.html', context)
@@ -125,6 +127,20 @@ def sellerAnalytics(request):
 
     total_revenue = Order.objects.filter(seller_id=request.user).aggregate(total_sum=Sum('total')).get('total_sum')
     revenue = total_revenue or 0
+
+    current_time = timezone.now()
+    time_48_hours_ago = current_time - timezone.timedelta(hours=48)
+    recent_orders = Order.objects.filter(seller = request.user)\
+        .filter(date_ordered__gte=time_48_hours_ago).count()
+
+    shipped = Order.objects.filter(seller = request.user)\
+        .filter(delivery_state = 'SHIPPED').count()
+    
+    delivered = Order.objects.filter(seller = request.user)\
+        .filter(delivery_state = 'DELIVERED').count()
+    
+    canceled = Order.objects.filter(seller = request.user)\
+        .filter(delivery_state = 'CANCELED').count()
     
     context = {
         'products_count': Product.objects.filter(seller_id=request.user).count(),
@@ -138,8 +154,11 @@ def sellerAnalytics(request):
         'products_count': Product.objects.filter(seller_id=request.user).count(),
         'orders_count': Order.objects.filter(seller=request.user).count(),
         'revenue': revenue,
-        'customers':Order.objects.filter(product__seller=request.user).values('buyer').distinct().count()
-
+        'customers':Order.objects.filter(product__seller=request.user).values('buyer').distinct().count(),
+        'recentOrders':recent_orders,
+        'shipped':shipped,
+        'delivered':delivered,
+        'canceled':canceled,
     }
 
     return render(request, 'users/sellerAnalytics.html', context)
@@ -147,7 +166,7 @@ def sellerAnalytics(request):
 
 def sellerOrders(request):
     context={
-        'orders':Order.objects.filter(seller=request.user),
+        'orders':Order.objects.filter(seller=request.user).order_by('-date_ordered'),
     }
     return render(request, 'users/sellerOrders.html', context)
 

@@ -50,6 +50,26 @@
     .tabnav button:hover {
       background-color: #e1e1e1;
     }
+
+    .element-container{
+      padding: 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+    }
+    .element{
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+    .stat{
+      font-size: 22px;
+      font-style: bold;
+    }
+
     .flex-container {
       display: flex;
     }

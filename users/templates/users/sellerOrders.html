@@ -46,8 +46,8 @@
                 <td>{{ order.date_ordered }}</td>
                 <td>{{ order.delivery_state }}</td>
                 <td>{{ order.payment_state }}</td>
-                <td><a href="{% url 'order-update' order.id %}">Update</a></th>
-                <td><a href="{% url 'order-delete' order.id %}">Delete</a></th>
+                <td><a class="link" href="{% url 'order-update' order.id %}">Update</a></th>
+                <td><a class="link" href="{% url 'order-delete' order.id %}">Delete</a></th>
               </tr>
             {% endfor %}
           </thead>

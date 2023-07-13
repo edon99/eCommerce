@@ -65,11 +65,19 @@ class Order(models.Model):
         PENDING= "PENDING", 'Pending'
     base_delivery_state = Delivery.PENDING
     delivery_state  = models.CharField(max_length=50, choices=Delivery.choices, default=base_delivery_state)
-
-    
-
     def get_absolute_url(self):
          return reverse('product-order-confirm',kwargs={'pk':self.pk})
+    
+class Notification(models.Model):
+    receiver : models.ForeignKey(User,on_delete=models.CASCADE)
+    notification : models.CharField(max_length=300)
+    time : models.DateTimeField(default=timezone.now)
+    class Read(models.TextChoices):
+        READ ="READ", 'Read'
+        UNREAD ="UNREAD", 'Unread'
+    base_read_state = Read.UNREAD
+    read_state : models.CharField(max_length=10,choices=Read.choices,default=base_read_state)
+     
     
     
   
