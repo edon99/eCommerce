@@ -30,7 +30,7 @@
       <h2>Credit Card</h2>
       <p  class="payment-description">Convenient and secure way to complete your purchase. </p>
     </a>
-    <a href="{% url 'success' seller %}" type="submit" value="button2" name="button_type" class="payment-option">
+    <a href="{% url 'success' order.id %}" type="submit" value="button2" name="button_type" class="payment-option">
       <h2>Cash on Delivery</h2>
       <p class="payment-description"> Pay in cash when your order is delivered right to your doorstep.</p>
     </a>
@@ -49,7 +49,7 @@
   var checkoutButton = document.getElementById("checkout-button");
 
   checkoutButton.addEventListener("click", function () {
-    fetch("{% url 'create-checkout-session' product.id %}", {
+    fetch("{% url 'create-checkout-session' order.id %}", {
       method: "POST",
       headers: {
           'X-CSRFToken': csrftoken

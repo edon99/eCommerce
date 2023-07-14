@@ -29,6 +29,20 @@ class home(ListView):
     context_object_name = 'products'
     paginate_by= 3
 
+def orders(request):
+    
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        notification = Notification.objects.filter(order=order_id).first()
+        notification.read_state=True
+        notification.save()
+    orders = Order.objects.filter(buyer= request.user).order_by('-date_ordered')
+   
+
+    return render(request,'eCommerce/orders.html',context={'orders':orders,})
+    
+
+
 class ProductListView(ListView):
     model = Product
     template_name = 'eCommerce/products.html'
@@ -75,8 +89,9 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 
 class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
-        product_id = self.kwargs["pk"]
-        product = Product.objects.get(id=product_id)
+        order_id = self.kwargs["pk"]
+        order = Order.objects.get(id=order_id)
+        product= order.product
         YOUR_DOMAIN = "http://127.0.0.1:8000"
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=['card'],
@@ -95,9 +110,10 @@ class CreateCheckoutSessionView(View):
             ],
             metadata={
                 "product_id": product.id
+                
             },
             mode='payment',
-            success_url=YOUR_DOMAIN + '/products/order/success/',
+            success_url=YOUR_DOMAIN + '/products/order/success/'+str(order_id)+'/' ,
             cancel_url=YOUR_DOMAIN + '/cancel/',
         )
         return JsonResponse({
@@ -167,10 +183,12 @@ class SuccessView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
-        seller = User.objects.get(id=self.kwargs['pk'])
-        
+        order = get_object_or_404(Order, id=self.kwargs['pk'])
 
-        Notification.objects.create(receiver=seller, notification="You have Received a new Order")
+        seller = order.seller
+        buyer = order.buyer
+
+        Notification.objects.create(receiver=seller, notification="You have Received a new Order from " + str(buyer), order=order )
         
         # Customize the notification content and other details as per your requirements
 

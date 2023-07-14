@@ -54,7 +54,25 @@ body {
   margin: 0;
 }
 
-.notification-list li {
+.time{
+  font-size: 10px;
+}
+.notification-list li button{
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+  text-align: left;
+  border: none;
+  background-color: white ;
+}
+.notification-list li button:hover{
+  background-color: whitesmoke ;
+}
+.notification-list li form{
+  border: none;
+  color: black;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
   padding: 10px;
   border-bottom: 1px solid #ccc;
 }

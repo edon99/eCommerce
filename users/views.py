@@ -59,7 +59,7 @@ def login_user(request):
             return redirect('login')
     
     else:
-        return render(request, 'users/login.html',{})
+        return render(request, 'users/login.html')
     
     
 
@@ -168,13 +168,22 @@ def sellerAnalytics(request):
 
 
 def sellerOrders(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        notification = Notification.objects.filter(order=order_id).first()
+        notification.read_state=True
+        notification.save()
     context={
         'orders':Order.objects.filter(seller=request.user).order_by('-date_ordered'),
     }
     return render(request, 'users/sellerOrders.html', context)
 
 def OrderUpdate(request,pk):
+
     order = get_object_or_404(Order, id=pk)
+
+   
+
     if request.method=='POST':
          delivery_state = request.POST.get('delivery-state')
          payment_state = request.POST.get('payment-state')
@@ -184,6 +193,11 @@ def OrderUpdate(request,pk):
          order.save()
 
          return redirect('seller-orders')
+    
+    
+    buyer = order.buyer
+
+    Notification.objects.create(receiver=buyer, notification="Your Order has been updated", order=order )
     context = {
         'order': order
     }
@@ -193,6 +207,7 @@ class OrderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Order
     # change this later to that users products list
     success_url = '/sellerOrders/'
+    
     def test_func(self):
         order = self.get_object()
         if self.request.user == order.seller:

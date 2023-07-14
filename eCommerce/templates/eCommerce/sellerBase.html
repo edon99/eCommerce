@@ -4,19 +4,28 @@
 <div class="sidebar">
     <div class="profile">
         <div class="notification-icon">
-            <i class="fas fa-bell"></i>
-            <span class="badge">{{ notifications_count }}</span>
-            <div class="notification-list">
-              <ul>
-                {% for notification in notifications %}
-                <li>{{ notification.notification }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          </div>
+           
+            <span id="notification-counter" class="badge">{{ unread }}</span>
+<div class="notification-list">
+    <ul>
+        {% for notification in notifications %}
+        <li style="font-size: 14px;" class="notification-item">
+            <form class="order-form" method="POST" action="{% url 'seller-orders' %}">
+                {% csrf_token %}
+                <input type="hidden" name="order_id" value="{{ notification.order.id }}">
+                <button type="submit">
+                    {{ notification.notification }}
+                    <span class="time">{{ notification.time|date:"d F" }} {{ notification.time|time:"H:i" }}</span>
+                </button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+        </div>
         <img src="{{ user.profile.image.url }}" alt="" style="height: 40px; width: 40px;">
-        <a href="{% url 'profile' %}">Profile</a> 
-        
+        <a href="{% url 'profile' %}">Profile</a>
     </div>
     <a href="{% url 'sellerHome' %}">Dashboard</a>
     <a href="{% url 'seller-products' %}">Products</a>
@@ -37,4 +46,15 @@
     {% block content %}{% endblock %}
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+   
+    const notificationItems = document.querySelectorAll('.notification-item');
 
+    // Update notification counter
+ 
+
+    // Mark notification as read on click
+    
+});
+</script>

@@ -73,6 +73,7 @@ class Notification(models.Model):
     notification = models.CharField(max_length=300,null=True)
     time = models.DateTimeField(default=timezone.now)
     read_state = models.BooleanField(default=False)
+    order = models.ForeignKey(Order,on_delete=models.CASCADE,default=None)
      
     
     

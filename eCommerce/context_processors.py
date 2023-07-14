@@ -3,11 +3,16 @@ from eCommerce.models import Notification
 
 
 def notifications(request):
-    # Retrieve the notifications object or perform any necessary logic
-    notifications = Notification.objects.filter(receiver = request.user)  # Customize the filter as per your requirements
-
-    # Return the context variables as a dictionary
-    return {
-        'notifications': notifications,
-        'notifications_count': notifications.count(),
-    }
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(receiver=request.user).order_by('-time')
+        unread = Notification.objects.filter(receiver=request.user, read_state=False).count()
+        return {
+            'notifications': notifications,
+            'unread': unread
+        }
+    else:
+        # Handle the case where the user is not authenticated
+        return {
+            'notifications': None,
+            'unread': None
+        }

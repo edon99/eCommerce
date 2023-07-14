@@ -14,6 +14,65 @@ body {
   bottom: 0;
   z-index: 1;
 }
+.notification-icon {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -30px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-list {
+  position: absolute;
+  top: 5px;
+  left: 0;
+  width: 200px;
+  max-height: 200px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow-y: auto;
+  display: none;
+}
+
+.notification-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+.notification-item li{
+  font-size: 6px;
+}
+
+.notification-list li {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.notification-list li:hover {
+ background-color: whitesmoke;
+}
+
+.notification-list li:last-child {
+  border-bottom: none;
+}
+
+.notification-icon:hover .notification-list {
+  display: block;
+}
+
 
 .profile {
   display: flex;
