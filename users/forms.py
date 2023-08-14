@@ -17,14 +17,17 @@ class UserForm(UserCreationForm):
 class LoginForm(forms.ModelForm):
     username = forms.CharField(max_length=150)
     password = forms.PasswordInput()
+    
     class Meta():
         model = User
         fields = ['username','password']
 class UserUpdateForm(forms.ModelForm):
       email = forms.EmailField()
+      first_name = forms.CharField(max_length=30)
+      last_name = forms.CharField(max_length=30)
       class Meta():
         model = User
-        fields = ['username','email']
+        fields = ['username','first_name','last_name','email']
     
 class ProfileUpdateForm(forms.ModelForm):
      class Meta():

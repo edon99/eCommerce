@@ -136,13 +136,15 @@ form .search-container{
   align-items: center; 
 }
 
-.search-container input[type="search"] {
+.search-box input[type="search"] {
   width: 300px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   outline: none;
+  font-family: 'Montserrat', sans-serif;
 }
+
 .search-button {
   position: absolute;
   top: 50%;

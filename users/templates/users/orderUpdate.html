@@ -1,76 +1,19 @@
-{% extends "eCommerce/base.html"%} 
+{% extends "eCommerce/sellerBase.html"%} 
 {% load static %} 
 {% block content %}
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body {
-        font-family: "Montserrat", Helvetica, sans-serif;
-          background-color: #f5f5f5;
-          
-        }
-    
-        h1 {
-          text-align: center;
-          color: #333333;
-        }
-    
-        .form-container {
-          max-width: 500px;
-          margin: 0 auto;
-          background-color: #ffffff;
-          padding: 20px;
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-    
-        .form-group {
-          display: flex;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-    
-        .form-label {
-          flex: 1;
-          font-weight: bold;
-        }
-    
-        .form-select {
-          flex: 2;
-          padding: 10px;
-          border: 1px solid #dddddd;
-          border-radius: 4px;
-          background-color: #f9f9f9;
-          color: #333333;
-        }
-    
-        .form-button {
-          display: block;
-          width: 100%;
-          padding: 12px;
-          font-size: 16px;
-          font-weight: bold;
-          text-align: center;
-          text-transform: uppercase;
-          background-color: #333333;
-          color: #ffffff;
-          border: none;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-    
-        .form-button:hover {
-          background-color: #555555;
-        }
-      </style>
+  <link rel="stylesheet" href="{% static 'eCommerce/orderUpdate.css' %}">
 </head>
 <body>
   
-    <h2>Order Update</h2>
+   
     <form method="POST" enctype="multipart/form-data">
+       
         {% csrf_token %}
         <div class="form-container">
+          <h2>Order Update</h2>
           <div class="form-group">
             <label for="delivery-state" class="form-label">Delivery State:</label>
             <select id="delivery-state" name="delivery-state" class="form-select">

@@ -1,153 +1,111 @@
+
 {% extends "eCommerce/base.html"%}
 
 
+{% load static %}
 {% block content %}
 <head>
-
-	<title>Profile </title>
+	<link rel="stylesheet" href="{% static 'eCommerce/profile.css' %}" />
+	<title>My Account </title>
 </head>
 <body>
-	<!-- <img src="{{ user.profile.image.url }}" alt="" style="width: auto; height: 300px;">
-	<h1>wsg {{ user.username }}</h1>
-
-	<p> {{ user.username }}</p>
-	<p> {{ user.email }}</p> -->
 	
-	<div class="profile-container">
-		<h1>wsg {{ user.username }}</h1>
-		<div class="profile-image2">
-		  <img src="{{ user.profile.image.url }}" alt="Profile image">
+	<div class="sidebar">
+		<div class="link-group">
+			<a href="{% url 'profile' %}">My Details</a>
+			<a href="{% url 'user-orders' %}">My Orders</a>
+		
 		</div>
-		<div class="profile-info">
-		  <h1>Username : {{ user.username }}</h1>
-		  <p>Email: {{ user.email }}</p>
-		</div>
-	  </div>
-	  <div class="container">
-	<form method="POST" enctype="multipart/form-data">
-			{% csrf_token %}
-			<fieldset class="form-group">
-				<h1>Profile Info</h1>
-				{{ u_form }}
-				{{ p_form }}
-			<button type="submit" class="button">Update</button>
-		</fieldset>
-		</form>
+	
 	</div>
+	
+	<h1 class="mainh">My Account</h1>
+	<div class="profile-container">
+		
+		<div class="left2">
+			<div class="profile-image2">
+				<img src="{{ user.profile.image.url }}" alt="Profile image">
+			</div>
+			<h1>{{ user.username }}</h1>
+			<p style="color: #666;">{{ user.role }}</p>
+		</div>
+
+		<div class="vertical-line"></div>
+	
+		<div class="profile-info">
+			<table>
+				
+				<tr>
+					<td class="dark-column">Firstname</td>
+					<td class="light-column">{{ user.first_name }}</td>
+				</tr>
+				<tr>
+					<td class="dark-column">Lastname</td>
+					<td class="light-column">{{ user.last_name }}</td>
+				</tr>
+				<tr>
+					<td class="dark-column">Email</td>
+					<td class="light-column">{{ user.email }}</td>
+				</tr>
+			</table>
+		
+		</div>
+		<div class="btn-ting">
+			<button id="open-modal-btn" >Update</button>
+		</div>
+		
+	  </div>
+	  <div class="modal-overlay" id="modal-overlay">
+		<div class="modal-content">
+			<div class="container">
+				<form method="POST" enctype="multipart/form-data">
+					{% csrf_token %}
+					<fieldset class="form-group">
+						<h1>Profile Info</h1>
+						<label for="">Username:</label>
+						{{ u_form.username }}
+
+						<div class="both">
+							<div class="firstname">
+								<label for="">Firstname:</label>
+						{{ u_form.first_name }}
+							</div>
+						<div class="lastname">
+							<label for="">Lastname:</label>
+						{{ u_form.last_name }}
+						</div>
+						
+						</div>
+
+						<label for="">Email:</label>
+						{{ u_form.email }}
+						{{ p_form }}
+						<div class="form-btn"><button type="submit">Update</button></div>
+						
+					</fieldset>
+				</form>
+			</div>
+		</div>
+	</div>
+	
+	<script>
+		// JavaScript to handle modal functionality
+		const openModalBtn = document.getElementById('open-modal-btn');
+		const modalOverlay = document.getElementById('modal-overlay');
+	
+		openModalBtn.addEventListener('click', () => {
+			modalOverlay.style.display = 'block';
+		});
+	
+		modalOverlay.addEventListener('click', (event) => {
+			if (event.target === modalOverlay) {
+				modalOverlay.style.display = 'none';
+			}
+		});
+	</script>
+	
 	  
 </body>
-<style>
-	body{
-		margin: 0;
-	}
-	.profile-container {
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  max-width: 600px;
-  margin: 0 auto;
-  margin-top: 30px;
-}
-
-.profile-image2 {
-  width: 150px;
-  height: 150px;
-  overflow: hidden;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 16px;
-}
-
-.profile-image2 img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profile-info {
-  text-align: center;
-}
-
-h1 {
-  font-size: 32px;
-  font-weight: bold;
-  margin-top: 0;
-  margin-bottom: 8px;
-}
-
-p {
-  font-size: 16px;
-  margin: 0;
-  color: #666;
-}
-.form-group {
-	width: 400px;
-	display: grid;
-	grid-template-columns: 1fr;
-	grid-gap: 10px;
-	padding: 20px;
-	border-radius: 5px;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-	background-color: #fff;
-	/* justify-items: center; */
-}
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-
-/* Set body background color and font family */
-body {
-	background-color: #f7f7f7;
-	/* font-family: Arial, sans-serif; */
-}
-
-/* Center content on the page */
-.container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-top: 50px;
-}
-
-/* Style the form inputs */
-.input {
-	border: 1px solid gray;
-	margin:0 100px;
-	border-radius: 3px;
-	padding: 10px;
-	background-color: #f7f7f7;
-	font-size: 16px;
-}
-
-/* Style the form labels */
-.label {
-	margin-bottom: 5px;
-	font-size: 16px;
-	font-weight: bold;
-}
-
-/* Style the submit button */
-.button {
-	background-color: #4CAF50;
-	color: white;
-	border: none;
-	border-radius: 5px;
-	padding: 10px;
-	font-size: 16px;
-	cursor: pointer;
-	width: 50%;
-	margin: 0 auto; /* Add this line */
-	display: block; /* Add this line */
-	
-}
-
-</style>
 
 {% endblock %}
