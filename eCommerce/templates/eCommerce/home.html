@@ -5,33 +5,50 @@
 <head>
     <title>Home Page</title>
     <link rel="stylesheet" href="{% static 'eCommerce/home.css' %}">
-    <link rel="stylesheet" href="{% static 'eCommerce/product.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'eCommerce/product.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'eCommerce/newProducts.css' %}">
 </head>
 <body>
-        <div class="search-container">
-            <div class="search-box">
-                <input type="text" placeholder="Search...">
-                <button>Search</button>
+  <div class="main-container">
+    
+    <div class="content">
+        <p class="text">Discover a world of style and convenience, one click at a time.</p>
+        {% if user.is_authenticated %}
+        <a style="text-decoration: none;" href="{% url 'site-products' %}"><button class="cssbuttons-io-button">Get started
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"></path></svg>
             </div>
-        </div>
-        <div class="filters">
-            <div class="filter">Filter 1</div>
-            <div class="filter">Filter 2</div>
-            <div class="filter">Filter 3</div>
-        </div>
-        <div class="products">
-             
-            {% for product in products %}
-                 <div class="product-container">
-                     <a href="{% url 'product-detail' product.id %}">{{ product.title }}</a>
-                     <p class="category">Category: {{ product.categorie }}</p>
-                     <img src="{{ product.image.url }}" alt="Product Image">
-                     <p class="price">{{ product.price }} $</p></p>
-                     <p class="seller">Seller: {{ product.seller }}</p>
-                     <p class="seller">Created at : {{ product.date_created}}</p>
-                 </div>
-             {% endfor %}
+        </button></a>
+        {% else %}
+        <a style="text-decoration: none;" href="{% url 'login' %}"><button class="cssbuttons-io-button">Get started
+          <div class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="none" d="M0 0h24v24H0z"></path><path fill="currentColor" d="M16.172 11l-5.364-5.364 1.414-1.414L20 12l-7.778 7.778-1.414-1.414L16.172 13H4v-2z"></path></svg>
+          </div>
+      </button></a>
+      {% endif %}
+    </div>
+    <img class="image" src="{% static 'eCommerce/phone.png' %}" alt="">
+</div>
+
+
+
+         <div class="products" style="justify-content:center;">
+          {% for product in products %}
+         <div class="card">
+          <a href="{% url 'product-detail' product.id %}"><img class="card-img" src="{{ product.image.url }}" alt="Product Image"></a>
+            <div class="card-info">
+              <a  href="{% url 'product-detail' product.id %}"><p class="text-title" >{{ product.title }}</p></a>
+              <p class="text-body"> Here goes the description of the product.</p>
+              <div class="card-details">
+              
+                <p class="text-body">{{ product.categorie }}</p>
+              </div>
+              
+            </div>
          </div>
+          {% endfor %}
+         </div>
+         
         
 </body>
 

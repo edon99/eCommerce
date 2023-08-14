@@ -52,12 +52,15 @@ class Order(models.Model):
     address = models.CharField(max_length=200, null=True)
     phoneNumber = models.IntegerField()
     class OrderState(models.TextChoices):
-        ON_DELIVERY ="ON DELIVERY",'On Delivery'
         UNPAID ="UNPAID", 'Unpaid'
         PAID ="PAID", 'Paid'
         CANCELED ="CANCELED", 'Canceled'
     base_state = OrderState.UNPAID
     payment_state = models.CharField(max_length=50, choices=OrderState.choices, default=base_state)
+    class PaymentMethod(models.TextChoices):
+         ON_DELIVERY = "ON DELIVERY",'On Delivery'
+         ONLINE = "ONLINE",'Online'
+    payment_method = models.CharField(max_length=50, choices=PaymentMethod.choices, default="ON DELIVERY")
     class Delivery(models.TextChoices):
         SHIPPED ="SHIPPED", 'Shipped'
         DELIVERED ="DELIVERED", 'Delivered'

@@ -2,54 +2,104 @@ body {
     font-family: 'Montserrat', sans-serif;
     margin: 0;
     padding: 0;
+   
 }
-.search-container {
+.cssbuttons-io-button {
+    background: #212121;
+    color: white;
+    font-family: inherit;
+    padding: 0.35em;
+    padding-left: 1.2em;
+    font-size: 17px;
+    font-weight: 500;
+    border-radius: 0.9em;
+    border: none;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    height: 2.8em;
+    padding-right: 3.3em;
+    cursor: pointer;
+  }
+
+  .cssbuttons-io-button .icon {
+    background: white;
+    margin-left: 1em;
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 50px;
+    height: 2.2em;
+    width: 2.2em;
+    border-radius: 0.7em;
+    box-shadow: 0.1em 0.1em 0.6em 0.2em #212121;
+    right: 0.3em;
+    transition: all 0.3s;
+    
+  }
+  
+  .cssbuttons-io-button:hover .icon {
+    width: calc(100% - 0.6em);
+  }
+  
+  .cssbuttons-io-button .icon svg {
+    width: 1.1em;
+    transition: transform 0.3s;
+    color: #212121;
+  }
+  
+  .cssbuttons-io-button:hover .icon svg {
+    transform: translateX(0.1em);
+  }
+  
+  .cssbuttons-io-button:active .icon {
+    transform: scale(0.95);
+  }
+  
+.main-container{
+    width: 100%;
+    height: 400px;
+    background-color: #041D37;
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center child horizontally */
+    align-items: center; /* Center child vertically */
+   
 }
-.search-box {
+
+.text{
+    color: #FFF;
+    font-family: 'Montserrat';
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 700;
+}
+
+   
+ /* Your existing styles */
+
+ .content {
     display: flex;
-    align-items: center;
-    background-color: #f2f2f2;
-    border-radius: 20px;
-    padding: 10px;
+    flex-direction: column; /* Stack items vertically */
+    
+    margin-left: 200px;
+    margin-right: 100px; /* Adjust this margin as needed */
+     /* Center-align text */
 }
-.search-box input[type=text] {
-    border: none;
-    width: 400px;
-    padding: 5px;
-    font-size: 16px;
+
+/* Additional styles for the button and image */
+.content .cssbuttons-io-button {
+    margin-top: 20px; /* Add some spacing between text and button */
+    margin-bottom: 0; /* Remove the margin from the button */
 }
-.search-box button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-/* Filters styles */
-.filters {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-}
-.filter {
-    background-color: #f2f2f2;
-    border-radius: 20px;
-    padding: 10px;
-    margin-right: 10px;
-    cursor: pointer;
-}
-.filter:hover {
-    background-color: #333;
-    color: #fff;
+
+.content .image {
+    /* Adjust image styles here */
+    max-width: 100%; /* Ensure the image scales properly */
+    margin-top: 20px; /* Add some spacing between button and image */
 }
 
 
-
+   

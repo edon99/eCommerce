@@ -13,6 +13,7 @@
             <form class="order-form" method="POST" action="{% url 'seller-orders' %}">
                 {% csrf_token %}
                 <input type="hidden" name="order_id" value="{{ notification.order.id }}">
+                <input type="hidden" name="notif_id" value="{{ notification.id }}">
                 <button type="submit">
                     {{ notification.notification }}
                     <span class="time">{{ notification.time|date:"d F" }} {{ notification.time|time:"H:i" }}</span>

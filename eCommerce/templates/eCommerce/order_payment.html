@@ -26,11 +26,11 @@
   </div>
   <form action="POST">
      <div class="payment-container">
-    <a href="#" type="submit" id="checkout-button" value="button1" name="button_type" class="payment-option">
+    <a href="#" type="submit" id="checkout-button" value="button1" name="Delivery" class="payment-option">
       <h2>Credit Card</h2>
       <p  class="payment-description">Convenient and secure way to complete your purchase. </p>
     </a>
-    <a href="{% url 'success' order.id %}" type="submit" value="button2" name="button_type" class="payment-option">
+    <a href="{% url 'success' order.id %}" type="submit" value="button2" name="Online" class="payment-option">
       <h2>Cash on Delivery</h2>
       <p class="payment-description"> Pay in cash when your order is delivered right to your doorstep.</p>
     </a>

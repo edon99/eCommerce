@@ -21,40 +21,54 @@
 
 {% else %}
 <nav class="navbar">
-  
-  <a href="{% url 'site-home' %}">Home</a>
-  <a href="{% url 'site-products' %}">Products</a>
-  <a href="{% url 'site-about' %}">About</a>
-
-  {% if user.is_authenticated %}
-<div class="dropdown"></div>
-<div class="notification-icon">
-           
-  <span id="notification-counter" class="badge">{{ unread }}</span>
-<div class="notification-list">
-<ul>
-{% for notification in notifications %}
-<li style="font-size: 14px;" class="notification-item">
-  <form class="order-form" method="POST" action="{% url 'user-orders' %}">
-      {% csrf_token %}
-      <input type="hidden" name="order_id" value="{{ notification.order.id }}">
-      <button type="submit">
-          {{ notification.notification }}
-          <span class="time">{{ notification.time|date:"d F" }} {{ notification.time|time:"H:i" }}</span>
-      </button>
-  </form>
-</li>
-{% endfor %}
-</ul>
-</div>
-
-</div>
+  <div class="left">
+   {% if user.is_authenticated %}
   <img
+    class="pfp"
     src="{{ user.profile.image.url }}"
     alt=""
-    style="height: 40px; width: 40px"
-  /><div class="arrow"></div>
-  <div class="dropdown-content"></div>
+    style="height: 40px; width: 40px; border-radius: 50%;"
+  />
+  <div class="dropdown"></div>
+  <div class="notification-icon">
+    <span id="notification-counter" class="badge">{{ unread }}</span>
+    {% if notifications %}
+    <div class="notification-list">
+      <ul>
+        {% for notification in notifications %}
+        <li style="font-size: 14px;" class="notification-item">
+          <form class="order-form" method="POST" action="{% url 'user-orders' %}">
+            {% csrf_token %}
+            <input type="hidden" name="order_id" value="{{ notification.order.id }}">
+            <input type="hidden" name="notif_id" value="{{ notification.id }}">
+            <button type="submit">
+              {{ notification.notification }}
+              <span class="time">{{ notification.time|date:"d F" }} {{ notification.time|time:"H:i" }}</span>
+            </button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+  
+  {% endif %}
+  <a href="{% url 'site-home' %}">Home</a>
+  <a href="{% url 'site-products' %}">Products</a>
+  <a href="{% url 'site-about' %}">About</a> 
+</div>
+<form method="GET" action="{% url 'site-products' %}">
+  <div class="search-container">
+      <div class="search-box">
+          <input name="search" type="search" placeholder="Search...">
+          <button class="search-button" type="submit"><img width="28" height="28" src="https://img.icons8.com/ios/50/search--v1.png" alt="search--v1"/></button>
+      </div>
+  </div>
+</form>
+<div class="right">
+   {% if user.is_authenticated %}
+ 
   <a href="{% url 'user-orders' %}">My Orders</a>
     <a href="{% url 'profile' %}">Profile</a>
     <a href="{% url 'logout' %}">Logout</a>
@@ -63,20 +77,30 @@
   {% else %}
   <a href="{% url 'login' %}">Login</a>
   <a href="{% url 'signup' %}">SignUp</a>
+  
   {% endif %}
+</div>
+
 
 </nav>
 {% endif %}
  {% block content %}{% endblock %}
  <script>
   document.addEventListener('DOMContentLoaded', function() {
-     
-      const notificationItems = document.querySelectorAll('.notification-item');
-  
-      // Update notification counter
-   
-  
-      // Mark notification as read on click
-      
+  const notificationIcon = document.querySelector('.notification-icon');
+  const notificationList = document.querySelector('.notification-list');
+
+  // Show notification list on hover if there are notifications
+  notificationIcon.addEventListener('mouseenter', function() {
+    if (notificationList.children.length > 0) {
+      notificationList.style.display = 'block';
+    }
   });
+
+  // Hide notification list when leaving the badge area
+  notificationIcon.addEventListener('mouseleave', function() {
+    notificationList.style.display = 'none';
+  });
+});
+
   </script>

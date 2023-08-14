@@ -10,11 +10,11 @@
 </head>
 
 <body>
+    <h1 style="margin-left: 20px;">Orders</h1>
     <main>
-     <h1>Orders</h1>
+     
      <div class="orders-container">
-        <h2 class="title">Orders</h2>
-        <div class="search-container">
+        <div class="search-container2">
             <input type="text" id="search-input" placeholder="Search orders..." onkeyup="searchOrders()">
         </div>
         <table id="orders-table">
@@ -50,6 +50,19 @@
             {% endfor %}
           </thead>
         </table>
+        <div class="pagination">
+            {% if orders.has_previous %}
+              <a href="?page=1">First</a>
+              <a href="?page={{ orders.previous_page_number }}">Previous</a>
+            {% endif %}
+          
+            <span class="current-page">{{ orders.number }}</span>
+          
+            {% if orders.has_next %}
+              <a href="?page={{ orders.next_page_number }}">Next</a>
+              <a href="?page={{ orders.paginator.num_pages }}">Last</a>
+            {% endif %}
+          </div>
     </div>
     </main>
 

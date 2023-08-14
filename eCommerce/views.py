@@ -1,9 +1,13 @@
+import json
 from typing import Any, Dict, Optional
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
 from django import views
 from django.http import JsonResponse
 from django.views import View 
 from django.views.generic import TemplateView 
 import stripe
+from django.core.paginator import Paginator
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
@@ -23,25 +27,46 @@ from .filters import ProductFilter
 #     }
 #     return render(request, 'eCommerce/home.html', context)
 
-class home(ListView):
-    model = Product
-    template_name = 'eCommerce/home.html'
-    context_object_name = 'products'
-    paginate_by= 3
+# class home(ListView):
+#     model = Product
+#     template_name = 'eCommerce/home.html'
+#     context_object_name = 'products'
+#     paginate_by= 3
+    
+def home(request):
+    search = request.GET.get('search')
+    if search: 
+        data = Product.objects.filter(title__icontains=search)
+    else:
+        data = Product.objects.all()
+
+    context = {
+        'products': data[:3],  # Use the filtered data for displaying the first 3 products.
+        'data': data,
+    }
+
+    return render(request,'eCommerce/home.html',context)
+    # https://www.youtube.com/watch?v=iFlSrEuyl8I&ab_channel=KenBroTech SEARCH FUNCTION THIS IS NEXT
 
 def orders(request):
     
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        notification = Notification.objects.filter(order=order_id).first()
+        # order_id = request.POST.get('order_id')
+        notif_id = request.POST.get('notif_id')
+        notification = get_object_or_404(Notification, id=notif_id)
         notification.read_state=True
         notification.save()
     orders = Order.objects.filter(buyer= request.user).order_by('-date_ordered')
+    paginator = Paginator(orders, 10)
+    page_number = request.GET.get('page')
+    orders = paginator.get_page(page_number)
    
 
     return render(request,'eCommerce/orders.html',context={'orders':orders,})
     
 
+
+from django.db.models import Q
 
 class ProductListView(ListView):
     model = Product
@@ -50,28 +75,34 @@ class ProductListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        filter = ProductFilter(self.request.GET, queryset=queryset)
-        self.filter = filter
 
-        # Apply sorting based on selected option
-        sort_option = self.request.GET.get('price', None)
+        # Apply filtering based on the filter fields
+        product_filter = ProductFilter(self.request.GET, queryset=queryset)
+        queryset = product_filter.qs
+
+        # Perform search based on the search query
+        search_query = self.request.GET.get('search')
+        if search_query:
+            queryset = queryset.filter(
+                Q(categorie__icontains=search_query) |  # Add other fields to search here using |
+                Q(title__icontains=search_query)      # for OR search between fields
+            )
+
+        # Apply sorting based on the selected option
+        sort_option = self.request.GET.get('price')
         if sort_option == 'highest':
             queryset = queryset.order_by('-price')
         elif sort_option == 'lowest':
             queryset = queryset.order_by('price')
 
-        return filter.qs
-
+        return queryset
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['filter'] = self.filter
+        filter = ProductFilter(self.request.GET, queryset=self.get_queryset())
+        context['filter'] = filter
         return context
-    def get_filter(self):
-        filter_class = self.get_filter_class()
-        return filter_class(self.request.GET, queryset=self.get_queryset())
 
-    def get_filter_class(self):
-        return ProductFilter
     
 class ProductDetailView(DetailView):
     model = Product
@@ -91,6 +122,8 @@ class CreateCheckoutSessionView(View):
     def post(self, request, *args, **kwargs):
         order_id = self.kwargs["pk"]
         order = Order.objects.get(id=order_id)
+        order.payment_method = "ONLINE"
+        order.payment_state = "PAID" #pour le moment
         product= order.product
         YOUR_DOMAIN = "http://127.0.0.1:8000"
         checkout_session = stripe.checkout.Session.create(
@@ -119,6 +152,37 @@ class CreateCheckoutSessionView(View):
         return JsonResponse({
             'id': checkout_session.id
         })
+    
+def stripe_webhook(request):
+    payload = request.body
+    event = None
+
+    try:
+        event = stripe.Event.construct_from(
+            json.loads(payload), stripe.api_key
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+
+    # Handle the event type
+    if event.type == "checkout.session.completed":
+        session = event.data.object
+
+        # Retrieve the order ID from metadata
+        order_id = session.get("metadata", {}).get("product_id")
+        if not order_id:
+            # Invalid metadata
+            return HttpResponse(status=400)
+
+        # Update the order in the database with the payment status
+        order = Order.objects.get(id=order_id)
+        order.payment_state = "PAID"
+        order.payment_method = "ONLINE"
+        order.save()
+
+    # Return a 200 response to acknowledge receipt of the event
+    return HttpResponse(status=200)
 
         
 class OrderCreateView(CreateView):
@@ -190,10 +254,14 @@ class SuccessView(TemplateView):
 
         Notification.objects.create(receiver=seller, notification="You have Received a new Order from " + str(buyer), order=order )
         
+        
         # Customize the notification content and other details as per your requirements
 
         messages.success(self.request, 'Your order has been confirmed!')
         return context
+
+class CancelView(TemplateView):
+    template_name = "eCommerce/cancel.html"
 
     
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

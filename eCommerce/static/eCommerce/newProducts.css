@@ -1,0 +1,193 @@
+
+.products{
+    display: flex;
+    flex-direction:row;
+    justify-content:left;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    margin-left: 210px;
+}
+.card {
+    width: 250px;
+    height: auto;
+    padding: .8em;
+    margin-right: 10px;
+    margin-top: 10px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   }
+   img{
+    margin: 0 auto;
+    width: 100%;
+    border-radius: 4px;
+    aspect-ratio: 1;
+    object-fit: cover;
+   }
+   .card-info a{
+    text-decoration: none;
+    color: black;
+    transition: margin-left 0.3s;
+    margin-left: 0;
+   }
+   .card-info a:hover{
+    color:#135756;
+    margin-left: 20px;
+   }
+   .card-img {
+    background-color: #135756;
+    border-radius: .5rem;
+    transition: .3s ease;
+   }
+   
+   .card-details{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+   }
+   
+   svg {
+    width: 20px;
+    height: 20px;
+   }
+   
+   .card-footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+   }
+   .text-title {
+    font-weight: 900;
+    font-size: 1.2em;
+    line-height: 1.5;
+   }
+   
+   .text-body {
+    font-size: .9em;
+    padding-bottom: 5px;
+   }
+   
+   /*Button*/
+   .card-button {
+    border: 1px solid #252525;
+    display: flex;
+    padding: .3em;
+    cursor: pointer;
+    border-radius: 50px;
+    transition: .3s ease-in-out;
+   }
+   
+   /*Hover*/
+   .card-img:hover {
+    transform: translateY(-2%);
+    /* box-shadow: rgba(226, 196, 63, 0.25) 0px 13px 47px -5px, rgba(180, 71, 71, 0.3) 0px 8px 16px -8px; */
+    -webkit-box-shadow: 0px 15px 26px -10px rgba(0,0,0,0.27);
+    -moz-box-shadow: 0px 15px 26px -10px rgba(0,0,0,0.27);
+    box-shadow: 0px 15px 26px -10px rgba(0,0,0,0.27);
+    cursor: pointer;
+   }
+   
+   .card-button:hover {
+    border: 1px solid lightgray;
+    background-color: lightgray;
+    
+   }
+   .new-product-link a::after {
+    content: '\2192';
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  .new-product-link a:hover::after {
+    opacity: 1;
+  }
+  
+  .new-product-link a:hover {
+    color: #000;
+  }
+  
+  .new-product-link a:focus {
+    outline: none;
+    color: #000;
+  }
+  .sideform{
+    
+    width: 200px;
+    height: 100%;
+    background: #fff;
+    padding: 10px;
+    position: fixed;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+  .filter-form {
+    padding-top: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 60px;
+ }
+ 
+ .form-field {
+     margin-bottom: 10px;
+ }
+ 
+ .form-field label {
+     display: block;
+     font-weight: bold;
+     
+ }
+ option{
+  font-family: 'Montserrat', sans-serif;
+ }
+ 
+ .form-field select,
+ .form-field input {
+     /* Add your form field styles here */
+     width: 100%;
+     padding: 5px;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+     box-sizing: border-box;
+     font-family: 'Montserrat', sans-serif;
+ }
+ 
+.submit-btn{
+  display: flex;
+  justify-content: center;
+}
+ .submit-btn button[type="submit"]{
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  background-color: black;
+  width: 80px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.submit-btn button[type="submit"]:hover {
+  background-color: #333333;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+.submit-btn button[type="submit"]:active{
+  transform: scale(0.95);
+transition-duration: .5s;
+}

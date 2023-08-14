@@ -105,7 +105,7 @@ def sellerAnalytics(request):
         .order_by('-order_count')[:5]
 
     most_expensive_products = Product.objects.filter(seller=request.user) \
-        .order_by('-price')[:5]
+        .order_by('-price')
 
     paginator_expensive = Paginator(most_expensive_products, 4)
     page_number_expensive = request.GET.get('page_expensive')
@@ -169,8 +169,9 @@ def sellerAnalytics(request):
 
 def sellerOrders(request):
     if request.method == 'POST':
-        order_id = request.POST.get('order_id')
-        notification = Notification.objects.filter(order=order_id).first()
+        # order_id = request.POST.get('order_id')
+        notif_id = request.POST.get('notif_id')
+        notification = get_object_or_404(Notification, id=notif_id)
         notification.read_state=True
         notification.save()
     context={
@@ -182,8 +183,6 @@ def OrderUpdate(request,pk):
 
     order = get_object_or_404(Order, id=pk)
 
-   
-
     if request.method=='POST':
          delivery_state = request.POST.get('delivery-state')
          payment_state = request.POST.get('payment-state')
@@ -193,7 +192,6 @@ def OrderUpdate(request,pk):
          order.save()
 
          return redirect('seller-orders')
-    
     
     buyer = order.buyer
 
@@ -206,13 +204,16 @@ def OrderUpdate(request,pk):
 class OrderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Order
     # change this later to that users products list
-    success_url = '/sellerOrders/'
     
+    success_url = '/sellerOrders/'
     def test_func(self):
         order = self.get_object()
+        
         if self.request.user == order.seller:
             return True
         return False
+    
+        
 
 
 class ProductListView(ListView):

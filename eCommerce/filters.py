@@ -2,17 +2,6 @@ import django_filters
 from .models import Product
 
 class ProductFilter(django_filters.FilterSet):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.filters['categorie'].field.choices = self.get_category_choices()
-
-    def get_category_choices(self):
-        queryset = Product.objects.values_list('categorie', flat=True).distinct()
-        choices = []
-        for categorie in queryset:
-            choices.append((categorie, categorie.capitalize()))
-        return choices
-
     categorie = django_filters.ChoiceFilter(empty_label='All')
 
     date_created = django_filters.ChoiceFilter(
@@ -35,6 +24,21 @@ class ProductFilter(django_filters.FilterSet):
         empty_label=None
     )
 
+    class Meta:
+        model = Product
+        fields = ['price', 'date_created', 'categorie']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.filters['categorie'].field.choices = self.get_category_choices()
+
+    def get_category_choices(self):
+        queryset = Product.objects.values_list('categorie', flat=True).distinct()
+        choices = []
+        for categorie in queryset:
+            choices.append((categorie, categorie.capitalize()))
+        return choices
+
     def filter_by_date_created(self, queryset, name, value):
         if value == 'recent':
             return queryset.order_by('-date_created')
@@ -51,6 +55,3 @@ class ProductFilter(django_filters.FilterSet):
         else:
             return queryset
 
-    class Meta:
-        model = Product
-        fields = ['price', 'date_created', 'categorie']
