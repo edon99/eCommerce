@@ -1,6 +1,6 @@
 
 
-{% extends "eCommerce/base.html"%}
+{% extends "eCommerce/sellerBase.html"%}
 {% load static %}
 
 {% block content %}
@@ -41,8 +41,11 @@
     {% endif %}
   
       {% if object.seller == user %}
-        <a class="update" href="{% url 'product-update' object.id %}">Update</a>
-        <a class="delete" href="{% url 'product-delete' object.id %}">Delete</a>
+      <div class="sellerting">
+        <a class="update" href="{% url 'product-update' object.id %}">UPDATE</a>
+        <a class="delete" href="{% url 'product-delete' object.id %}">DELETE</a>
+      </div>
+        
       {% endif %}
       </div>
       

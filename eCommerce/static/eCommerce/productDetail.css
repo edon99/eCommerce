@@ -30,7 +30,7 @@ main{
     justify-content:space-evenly;
     
 }
-img{
+.image img{
     max-height: 500px;
     margin: 0 auto;
     width: 80%;
@@ -131,4 +131,52 @@ img{
 .CartBtn:active {
   transform: scale(0.95);
   transition-duration: .5s;
+}
+.sellerting{
+  display: flex;
+  justify-content: center;
+}
+.update{
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  padding: 7px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  background-color: black;
+  width: 100px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+
+}
+
+.update:hover {
+  background-color: #333333;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+.delete{
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  padding: 7px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  background-color: rgb(138, 27, 27);
+  width: 100px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+
+}
+
+.delete:hover{
+  background-color: #753c3c;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+.update, .delete:active{
+  transform: scale(0.95);
+transition-duration: .5s;
 }

@@ -1,8 +1,9 @@
 
 from django import forms
-from eCommerce.models import User ,Order
+from eCommerce.models import User ,Order, Product
 from users.models import Profile
 from django.contrib.auth.forms import UserCreationForm
+from eCommerce.widgets import ImagePreviewWidget
 
 
 class UserForm(UserCreationForm):
@@ -64,7 +65,6 @@ class OrderForm(forms.ModelForm):
         model = Order
         fields = ['seller', 'buyer', 'product', 'firstName', 'lastName', 'phoneNumber', 'quantity', 'address','payment_state','delivery_state']
     
-
 
    
 

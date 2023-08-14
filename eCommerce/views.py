@@ -229,7 +229,7 @@ def Payment(request,pk, order_id):
 class ProductUpdateView(LoginRequiredMixin,UserPassesTestMixin ,UpdateView):
     model = Product
     fields = ['title', 'categorie','image','price']
-
+    template_name = 'eCommerce/product_form.html'
     def form_valid(self, form):
         form.instance.seller = self.request.user
         print(form.instance.image.url)
