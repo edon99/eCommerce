@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from django.urls import reverse
+from decimal import Decimal
 from django.utils import timezone
 from PIL import Image
 # from django.contrib.auth.models import User
@@ -79,6 +80,22 @@ class Notification(models.Model):
     order = models.ForeignKey(Order,on_delete=models.CASCADE,default=None)
      
     
-    
-  
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Product)
+    quantities = models.IntegerField(default=1)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now=True)
+
+    def calculate_total(self):
+        total_price = Decimal('0.00')  
+        for product in self.items.all():
+            quantity = self.quantities
+            total_price += product.price * quantity
+        self.total_price = total_price
+        self.save()
+
+
+    def __str__(self):
+        return f"Cart for {self.user.username}"
     

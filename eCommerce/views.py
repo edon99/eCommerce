@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from .models import Product, Order, User,Notification
+from .models import Product, Order, Cart,Notification
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
@@ -115,6 +115,27 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.seller = self.request.user
         return super().form_valid(form)
+    
+def add_to_cart(request,product_id):
+    product= Product.objects.get(pk=product_id)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart.items.add(product)
+    cart.save()
+    cart.calculate_total()
+    return JsonResponse({'success': True})
+def delete_from_cart(request,product_id):
+    product= Product.objects.get(pk=product_id)
+    cart= Cart.objects.get(user=request.user)
+    cart.items.remove(product)
+    cart.save()
+    cart.calculate_total()
+    return JsonResponse({'success': True})
+
+def cart_items(request):
+    cart = Cart.objects.get(user=request.user)
+    cart_items = cart.items.all()
+    return render (request, 'eCommerce/cartItems.html',context={'cart': cart,'cart_items':cart_items})
+    
     
 stripe.api_key = settings.STRIPE_SECRET_KEY
 

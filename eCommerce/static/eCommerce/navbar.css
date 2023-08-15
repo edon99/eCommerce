@@ -125,7 +125,6 @@ main{
 .notification-list li:last-child {
   border-bottom: none;
 }
-
 .notification-icon:hover .notification-list {
   display: block;
 }

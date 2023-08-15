@@ -48,14 +48,20 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-   
-    const notificationItems = document.querySelectorAll('.notification-item');
+  document.addEventListener('DOMContentLoaded', function() {
+  const notificationIcon = document.querySelector('.notification-icon');
+  const notificationList = document.querySelector('.notification-list');
 
-    // Update notification counter
- 
+  // Show notification list on hover if there are notifications
+  notificationIcon.addEventListener('mouseenter', function() {
+    if (notificationList.children.length > 0) {
+      notificationList.style.display = 'block';
+    }
+  });
 
-    // Mark notification as read on click
-    
+  // Hide notification list when leaving the badge area
+  notificationIcon.addEventListener('mouseleave', function() {
+    notificationList.style.display = 'none';
+  });
 });
 </script>

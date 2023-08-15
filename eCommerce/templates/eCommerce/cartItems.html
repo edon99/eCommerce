@@ -1,0 +1,124 @@
+{% extends "eCommerce/base.html" %}
+
+{% load static %}
+
+{% block content %}
+<head>
+    <title>Cart Items</title>
+    <link rel="stylesheet" href="{% static 'eCommerce/cart.css' %}">
+</head>
+<body>
+    <main>
+        <div class="items-container">
+            {% for item in cart_items %}
+            <div class="item" data-product-id="{{ item.id }}">
+                <div class="left-ting">
+                    <div class="image">
+                        <img src="{{ item.image.url }}" alt="">
+                    </div>
+                    <div class="info">
+                        <div class="title">
+                            <h1>{{ item.title }}</h1>
+                        </div>
+                        <div class="price">
+                            <h2>${{ item.price }}</h2>
+                        </div>
+                        <div class="category">
+                            <span>{{ item.categorie }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="quantity">
+                    <button class="quantity-button quantity-increment">+</button>
+                    <input type="number" class="quantity-input" value="1" min="1">
+                    <button class="quantity-button quantity-decrement">-</button>
+                </div>
+                <div class="remove-button-container">
+                    <button class="remove-button">x</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="payment-container">
+            <h1 id="total-price">Total To Pay: $0</h1>
+            <a href=""><button type="button" class="options">Continue ></button></a>
+        </div>
+    </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const itemsContainer = document.querySelector('.items-container');
+    const totalPriceElement = document.getElementById('total-price');
+    
+
+    // Function to calculate total price
+    function calculateTotalPrice() {
+        let total = 0;
+        const itemElements = itemsContainer.querySelectorAll('.item');
+
+        itemElements.forEach(itemElement => {
+            const quantityInput = itemElement.querySelector('.quantity-input');
+            const price = parseFloat(itemElement.querySelector('.price h2').textContent.replace('$', ''));
+            const quantity = parseInt(quantityInput.value);
+            total += price * quantity;
+        });
+
+        totalPriceElement.textContent = `Total To Pay: $${total.toFixed(2)}`;
+    }
+
+    itemsContainer.addEventListener('click', (event) => {
+        const target = event.target;
+        const itemContainer = target.closest('.item');
+        const quantityInput = itemContainer.querySelector('.quantity-input');
+
+        if (target.classList.contains('quantity-increment')) {
+            quantityInput.stepUp();
+            calculateTotalPrice();
+        } else if (target.classList.contains('quantity-decrement')) {
+            if (quantityInput.value > 1) {
+                quantityInput.stepDown();
+                calculateTotalPrice();
+            }
+        } else if (target.classList.contains('remove-button')) {
+            itemContainer.remove();
+            const productId = itemContainer.getAttribute('data-product-id');
+            removeProduct(productId, itemContainer);
+            calculateTotalPrice();
+        }
+    });
+    calculateTotalPrice(); // Calculate initial total when page loads
+    const csrfToken = "{{ csrf_token }}";
+    function removeProduct(productId) {
+    const csrfToken = "{{ csrf_token }}"; // Use the CSRF token variable
+
+    fetch(`/delete_from_cart/${productId}/`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': csrfToken, // Set the CSRF token header
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the item from the front-end
+            const itemElement = document.querySelector(`[data-product-id="${productId}"]`);
+            itemElement.remove();
+
+            // Update the total price
+            calculateTotalPrice();
+        }
+    })
+    .catch(error => {
+        console.error('An error occurred:', error);
+    });
+}
+
+});
+    calculateTotalPrice(); // Calculate initial total when page loads
+
+</script>
+</body>
+
+{% endblock %}

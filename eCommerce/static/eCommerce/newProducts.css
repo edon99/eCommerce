@@ -31,11 +31,11 @@
     margin-left: 0;
    }
    .card-info a:hover{
-    color:#135756;
+    color:#333333;
     margin-left: 20px;
    }
    .card-img {
-    background-color: #135756;
+    background-color: rgba(0,0,0,0.27);
     border-radius: .5rem;
     transition: .3s ease;
    }

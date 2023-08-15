@@ -1,25 +1,66 @@
 {% load static %}
 
-<head>
-<link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}" />  
-</head>
+
 {% if user.role == 'SELLER' %}
-<nav class="navbar">
-  <a href="{% url 'sellerHome' %}">Dashboard</a>
-  <a href="{% url 'seller-products' %}">My business</a>
-  <a style="display: block; margin-right: auto;" href="{% url 'seller-dashboard' %}">Analytics</a>
+<head> 
+  <link rel="stylesheet" href="{% static 'eCommerce/sidebar.css' %}" /> 
+  </head>
+<div class="sidebar">
+  <div class="profile">
+      <div class="notification-icon">
+         
+          <span id="notification-counter" class="badge">{{ unread }}</span>
+<div class="notification-list">
+  <ul>
+      {% for notification in notifications %}
+      <li style="font-size: 14px;" class="notification-item">
+          <form class="order-form" method="POST" action="{% url 'seller-orders' %}">
+              {% csrf_token %}
+              <input type="hidden" name="order_id" value="{{ notification.order.id }}">
+              <input type="hidden" name="notif_id" value="{{ notification.id }}">
+              <button type="submit">
+                  {{ notification.notification }}
+                  <span class="time">{{ notification.time|date:"d F" }} {{ notification.time|time:"H:i" }}</span>
+              </button>
+          </form>
+      </li>
+      {% endfor %}
+  </ul>
+</div>
 
-  <div class="dropdown">
-    <img src="{{ user.profile.image.url }}" alt="" class="profile-image" /><div class="arrow"></div>
-    <div class="dropdown-content">
-      
+      </div>
+      <img src="{{ user.profile.image.url }}" alt="" style="height: 40px; width: 40px;">
       <a href="{% url 'profile' %}">Profile</a>
-      <a href="{% url 'logout' %}">Logout</a>
-    </div>
   </div>
-</nav>
+  <a href="{% url 'sellerHome' %}">Dashboard</a>
+  <a href="{% url 'seller-products' %}">Products</a>
+  <a href="{% url 'seller-orders' %}">Orders</a>
+  <a href="{% url 'seller-analytics' %}">Analytics</a>
+  <a href="{% url 'logout' %}">Logout</a>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const notificationIcon = document.querySelector('.notification-icon');
+  const notificationList = document.querySelector('.notification-list');
 
+  // Show notification list on hover if there are notifications
+  notificationIcon.addEventListener('mouseenter', function() {
+    if (notificationList.children.length > 0) {
+      notificationList.style.display = 'block';
+    }
+  });
+
+  // Hide notification list when leaving the badge area
+  notificationIcon.addEventListener('mouseleave', function() {
+    notificationList.style.display = 'none';
+  });
+});
+</script>
 {% else %}
+<head>
+  <link rel="stylesheet" href="{% static 'eCommerce/navbar.css' %}" />  
+
+  </head>
 <nav class="navbar">
   <div class="left">
    {% if user.is_authenticated %}
@@ -69,7 +110,7 @@
 <div class="right">
    {% if user.is_authenticated %}
  
-  
+    <a href="{% url 'cart-items' %}"><svg style="margin: 0;" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512" fill="rgb(255, 255, 255)" class="cart"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"></path></svg></a>
     <a href="{% url 'profile' %}">My Account</a>
     <a href="{% url 'logout' %}">Logout</a>
   </div>

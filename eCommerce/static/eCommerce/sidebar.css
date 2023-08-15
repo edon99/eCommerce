@@ -42,7 +42,6 @@ body {
   width: 200px;
   max-height: 200px;
   background-color: #fff;
-  border: 1px solid #ccc;
   border-radius: 4px;
   overflow-y: auto;
   display: none;
@@ -74,18 +73,19 @@ body {
   display: flex;
   flex-direction: column;
   padding: 10px;
-  border-bottom: 1px solid #ccc;
+ 
 }
 .notification-list li:hover {
  background-color: whitesmoke;
 }
 
-.notification-list li:last-child {
+.notification-list li:last-child form{
   border-bottom: none;
 }
 
 .notification-icon:hover .notification-list {
   display: block;
+ 
 }
 
 
