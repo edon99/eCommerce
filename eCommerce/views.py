@@ -1,3 +1,4 @@
+from decimal import Decimal
 import json
 from typing import Any, Dict, Optional
 from django.views.decorators.csrf import csrf_exempt
@@ -134,8 +135,35 @@ def delete_from_cart(request,product_id):
 def cart_items(request):
     cart = Cart.objects.get(user=request.user)
     cart_items = cart.items.all()
+    if request.method == 'POST':
+        # for key, value in request.POST.items():
+        #     if key.startswith('quantity_'):
+        #         product_id = key.split('_')[1]
+        #         new_quantity = int(value)
+
+        total_price = Decimal(request.POST.get('total', '0'))
+        cart.total_price=total_price
+        cart.save()
     return render (request, 'eCommerce/cartItems.html',context={'cart': cart,'cart_items':cart_items})
+
+def cart_order(request):
+    cart = Cart.objects.get(user=request.user)
     
+    return render (request, 'eCommerce/cartOrder.html')
+
+def cart_order(request):
+    cart = Cart.objects.get(user=request.user)
+ 
+
+    return render(request, 'eCommerce/cartOrder.html')
+    
+    
+
+
+
+
+
+
     
 stripe.api_key = settings.STRIPE_SECRET_KEY
 

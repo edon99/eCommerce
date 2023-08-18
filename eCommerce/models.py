@@ -4,7 +4,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
 from decimal import Decimal
 from django.utils import timezone
-from PIL import Image
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 # from django.contrib.auth.models import User
 # Create your models here.
 
@@ -98,4 +99,61 @@ class Cart(models.Model):
 
     def __str__(self):
         return f"Cart for {self.user.username}"
+
+class CartOrder(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    buyer = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=40)
+    last_name = models.CharField(max_length=40)
+    date_ordered = models.DateTimeField(default=timezone.now)
+    address = models.CharField(max_length=200, null=True)
+    phoneNumber = models.IntegerField()
+    class OrderState(models.TextChoices):
+        UNPAID ="UNPAID", 'Unpaid'
+        PAID ="PAID", 'Paid'
+        CANCELED ="CANCELED", 'Canceled'
+    base_state = OrderState.UNPAID
+    payment_state = models.CharField(max_length=50, choices=OrderState.choices, default=base_state)
+    class PaymentMethod(models.TextChoices):
+         ON_DELIVERY = "ON DELIVERY",'On Delivery'
+         ONLINE = "ONLINE",'Online'
+    payment_method = models.CharField(max_length=50, choices=PaymentMethod.choices, default="ON DELIVERY")
+    class Delivery(models.TextChoices):
+        SHIPPED ="SHIPPED", 'Shipped'
+        DELIVERED ="DELIVERED", 'Delivered'
+        CANCELED ="CANCELED", 'Canceled'
+        PENDING= "PENDING", 'Pending'
+    base_delivery_state = Delivery.PENDING
+    delivery_state  = models.CharField(max_length=50, choices=Delivery.choices, default=base_delivery_state)
+
+
+def create_orders_from_cart_order(cart_order_instance):
+    cart = cart_order_instance.cart
+    for product in cart.items.all():
+            Order.objects.create(
+                product=product,
+                buyer=cart_order_instance.buyer,
+                seller=product.seller,  # Adjust as needed
+                firstName=cart_order_instance.first_name,
+                lastName=cart_order_instance.last_name,
+                date_ordered=cart_order_instance.date_ordered,
+                quantity=cart.quantities,
+                total=product.price * cart.quantities,
+                address=cart_order_instance.address,
+                phoneNumber=cart_order_instance.phoneNumber,
+                payment_state=cart_order_instance.payment_state,
+                payment_method=cart_order_instance.payment_method,
+                delivery_state=cart_order_instance.delivery_state,
+        )
+@receiver(post_save, sender=CartOrder)
+def create_orders_on_cart_order_save(sender, instance, created, **kwargs):
+        if created:
+            create_orders_from_cart_order(instance)
+
+
+
+
+
+
+
     

@@ -9,8 +9,8 @@
 </head>
 <body>
     <main>
-        <div class="items-container">
-            {% for item in cart_items %}
+        <div class="items-container"> 
+            {% for item in cart_items %}{% csrf_token %}
             <div class="item" data-product-id="{{ item.id }}">
                 <div class="left-ting">
                     <div class="image">
@@ -38,18 +38,27 @@
                 </div>
             </div>
             {% endfor %}
+       
         </div>
         <div class="payment-container">
-            <h1 id="total-price">Total To Pay: $0</h1>
-            <a href=""><button type="button" class="options">Continue ></button></a>
+            
+            <h1></h1><h1 id="total-price">Total To Pay: $0</h1>
+            <input type="hidden" id="total-input" name="total" value="0">
+            <a href="{% url 'cart-order'%}"><button type="button" class="options">
+                Continue
+            </button></a>
+         </form>
         </div>
+       
+          
     </main>
 
 <script>
+
 document.addEventListener('DOMContentLoaded', function() {
     const itemsContainer = document.querySelector('.items-container');
     const totalPriceElement = document.getElementById('total-price');
-    
+    const totalInput = document.getElementById('total-input');
 
     // Function to calculate total price
     function calculateTotalPrice() {
@@ -63,9 +72,9 @@ document.addEventListener('DOMContentLoaded', function() {
             total += price * quantity;
         });
 
+        totalInput.value = total.toFixed(2); // Update the hidden input field
         totalPriceElement.textContent = `Total To Pay: $${total.toFixed(2)}`;
     }
-
     itemsContainer.addEventListener('click', (event) => {
         const target = event.target;
         const itemContainer = target.closest('.item');
@@ -87,14 +96,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     calculateTotalPrice(); // Calculate initial total when page loads
-    const csrfToken = "{{ csrf_token }}";
-    function removeProduct(productId) {
-    const csrfToken = "{{ csrf_token }}"; // Use the CSRF token variable
 
+    const csrfToken = "{{ csrf_token }}";
+
+    function removeProduct(productId) {
     fetch(`/delete_from_cart/${productId}/`, {
         method: 'DELETE',
         headers: {
-            'X-CSRFToken': csrfToken, // Set the CSRF token header
+            'X-CSRFToken': csrfToken,
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         },
@@ -102,11 +111,11 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Remove the item from the front-end
+           
             const itemElement = document.querySelector(`[data-product-id="${productId}"]`);
             itemElement.remove();
 
-            // Update the total price
+            
             calculateTotalPrice();
         }
     })
@@ -116,8 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 });
-    calculateTotalPrice(); // Calculate initial total when page loads
-
+    calculateTotalPrice(); 
 </script>
 </body>
 
