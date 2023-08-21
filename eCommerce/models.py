@@ -82,11 +82,6 @@ class Notification(models.Model):
     read_state = models.BooleanField(default=False)
     order = models.ForeignKey(Order,on_delete=models.CASCADE,default=None)
 
-   
-class CartQuantities(models.Model):
-     cart = models.ForeignKey('Cart',on_delete=models.CASCADE)
-     product = models.ForeignKey(Product,on_delete=models.CASCADE)
-     quantity = models.IntegerField(default=1)   
 
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

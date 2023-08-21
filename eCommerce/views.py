@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from .models import Product, Order, Cart,Notification,CartOrder,CartQuantities
+from .models import Product, Order, Cart,Notification,CartOrder
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
