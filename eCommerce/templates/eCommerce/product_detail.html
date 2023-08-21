@@ -52,7 +52,7 @@
 
      
       
-      <a style="text-decoration: none;" href="{% url 'order-create' object.id %}"><button style="text-align: center;" type="button" class="options">Order now</button></a>
+      <a class="order" style="text-decoration: none;" href="{% url 'order-create' object.id %}"><button style="text-align: center;" type="button" class="options">Order now</button></a>
     {% else %}
     <a style="text-align: center;" href="{% url 'login' %}">Login to order now!</a>
     {% endif %}

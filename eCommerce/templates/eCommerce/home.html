@@ -30,9 +30,7 @@
     <img class="image" src="{% static 'eCommerce/phone.png' %}" alt="">
 </div>
 
-
-
-         <div class="products" style="justify-content:center;">
+         <div class="homeProducts">
           {% for product in products %}
          <div class="card">
           <a href="{% url 'product-detail' product.id %}"><img class="card-img" src="{{ product.image.url }}" alt="Product Image"></a>

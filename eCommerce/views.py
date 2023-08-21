@@ -19,20 +19,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.forms import CartOrderForm
 from .filters import ProductFilter
-# Create your views here.
 
-
-# def home(request) :
-#     context = {
-#         'products':Product.objects.all()
-#     }
-#     return render(request, 'eCommerce/home.html', context)
-
-# class home(ListView):
-#     model = Product
-#     template_name = 'eCommerce/home.html'
-#     context_object_name = 'products'
-#     paginate_by= 3
     
 def home(request):
     search = request.GET.get('search')
@@ -42,7 +29,7 @@ def home(request):
         data = Product.objects.all()
 
     context = {
-        'products': data[:3],  # Use the filtered data for displaying the first 3 products.
+        'products': data[:3], 
         'data': data,
     }
 
@@ -52,7 +39,6 @@ def home(request):
 def orders(request):
     
     if request.method == 'POST':
-        # order_id = request.POST.get('order_id')
         notif_id = request.POST.get('notif_id')
         notification = get_object_or_404(Notification, id=notif_id)
         notification.read_state=True
@@ -77,19 +63,19 @@ class ProductListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
 
-        # Apply filtering based on the filter fields
+        
         product_filter = ProductFilter(self.request.GET, queryset=queryset)
         queryset = product_filter.qs
 
-        # Perform search based on the search query
+
         search_query = self.request.GET.get('search')
         if search_query:
             queryset = queryset.filter(
-                Q(categorie__icontains=search_query) |  # Add other fields to search here using |
-                Q(title__icontains=search_query)      # for OR search between fields
+                Q(categorie__icontains=search_query) |  
+                Q(title__icontains=search_query)      
             )
 
-        # Apply sorting based on the selected option
+        
         sort_option = self.request.GET.get('price')
         if sort_option == 'highest':
             queryset = queryset.order_by('-price')
@@ -258,26 +244,26 @@ def stripe_webhook(request):
             json.loads(payload), stripe.api_key
         )
     except ValueError as e:
-        # Invalid payload
+        
         return HttpResponse(status=400)
 
-    # Handle the event type
+    
     if event.type == "checkout.session.completed":
         session = event.data.object
 
-        # Retrieve the order ID from metadata
+        
         order_id = session.get("metadata", {}).get("product_id")
         if not order_id:
-            # Invalid metadata
+            
             return HttpResponse(status=400)
 
-        # Update the order in the database with the payment status
+    
         order = Order.objects.get(id=order_id)
         order.payment_state = "PAID"
         order.payment_method = "ONLINE"
         order.save()
 
-    # Return a 200 response to acknowledge receipt of the event
+    
     return HttpResponse(status=200)
 
         
@@ -285,8 +271,8 @@ class OrderCreateView(CreateView):
     model = Order
     fields = ['firstName','lastName','phoneNumber','quantity','address']
     def form_valid(self, form):
-        product_id = self.kwargs['pk']  # Retrieve the product ID from the URL parameter
-        product = Product.objects.get(id=product_id)  # Retrieve the Product instance
+        product_id = self.kwargs['pk']  
+        product = Product.objects.get(id=product_id)
         form.instance.buyer = self.request.user
         form.instance.seller = product.seller
         form.instance.product_id = product_id  
@@ -308,6 +294,22 @@ class OrderCreateView(CreateView):
         product_id = self.kwargs['pk']
         order_id = self.object.id
         return reverse('payment', kwargs={'pk': product_id,'order_id':order_id}) 
+    
+def OrderCancel(request):
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        try:
+            order = Order.objects.get(id=order_id)
+            if order.payment_state in ['UNPAID', 'CANCELED']:
+                order.delete()
+                return JsonResponse({'success': True})
+            else:
+                return JsonResponse({'success': False, 'message': 'Order cannot be canceled. Contact the seller for more information.'})
+        except Order.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Order not found.'})
+
+    return JsonResponse({'success': False, 'message': 'Invalid request method.'})
+
 
 def Payment(request,pk, order_id):
     order = Order.objects.get(id=order_id)
@@ -319,9 +321,7 @@ def Payment(request,pk, order_id):
 
     return render(request,'eCommerce/order_payment.html',context={'order':order,'product':product,'seller':seller,'STRIPE_PUBLIC_KEY':stripe})
 
-
-
-
+ 
 class ProductUpdateView(LoginRequiredMixin,UserPassesTestMixin ,UpdateView):
     model = Product
     fields = ['title', 'categorie','image','price']
@@ -362,7 +362,6 @@ class CancelView(TemplateView):
     
 class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
-    # change this later to that users products list
     success_url = '/sellerHome/'
     def test_func(self):
         product = self.get_object()

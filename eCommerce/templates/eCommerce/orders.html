@@ -12,7 +12,7 @@
 <body>
     <h1 style="margin-left: 20px;">Orders</h1>
     <main>
-     
+      <div id="error-message" class="error-message"></div>
      <div class="orders-container">
         <div class="search-container2">
             <input type="text" id="search-input" placeholder="Search orders..." onkeyup="searchOrders()">
@@ -45,7 +45,7 @@
                 <td>{{ order.date_ordered }}</td>
                 <td>{{ order.delivery_state }}</td>
                 <td>{{ order.payment_state }}</td>
-                <td><a class="link" href="">Cancel</a></th>
+                <td><a class="link" href="" data-order-id="{{ order.id }}" onclick="deleteOrder(this, event)">Cancel</a></td>
               </tr>
             {% endfor %}
           </thead>
@@ -64,39 +64,108 @@
             {% endif %}
           </div>
     </div>
+    <div id="delete-modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <p>Are you sure you want to cancel this order?</p>
+        <button class="link confirm" id="confirm-delete" onclick="confirmDelete()">Confirm</button>
+        <button class="link cancel" id="confirm-delete" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+    
     </main>
 
 </body>
  <script>
-        function searchOrders() {
-            var input = document.getElementById("search-input");
-            var filter = input.value.toUpperCase();
-            var table = document.getElementById("orders-table");
-            var rows = table.getElementsByTagName("tr");
+       function searchOrders() {
+    var input = document.getElementById("search-input");
+    var filter = input.value.toUpperCase();
+    var table = document.getElementById("orders-table");
+    var rows = table.getElementsByTagName("tr");
 
-            for (var i = 0; i < rows.length; i++) {
-                var firstNameColumn = rows[i].getElementsByTagName("th")[0];
-                var lastNameColumn = rows[i].getElementsByTagName("th")[1];
-                var phoneNumberColumn = rows[i].getElementsByTagName("th")[2];
-                var addressColumn = rows[i].getElementsByTagName("th")[3];
+    for (var i = 1; i < rows.length; i++) { // Start from index 1 to skip the header row
+        var firstNameColumn = rows[i].getElementsByTagName("td")[0];
+        var lastNameColumn = rows[i].getElementsByTagName("td")[1];
+        var phoneNumberColumn = rows[i].getElementsByTagName("td")[2];
+        var addressColumn = rows[i].getElementsByTagName("td")[3];
 
-                var firstName = firstNameColumn.textContent || firstNameColumn.innerText;
-                var lastName = lastNameColumn.textContent || lastNameColumn.innerText;
-                var phoneNumber = phoneNumberColumn.textContent || phoneNumberColumn.innerText;
-                var address = addressColumn.textContent || addressColumn.innerText;
+        var firstName = firstNameColumn.textContent || firstNameColumn.innerText;
+        var lastName = lastNameColumn.textContent || lastNameColumn.innerText;
+        var phoneNumber = phoneNumberColumn.textContent || phoneNumberColumn.innerText;
+        var address = addressColumn.textContent || addressColumn.innerText;
 
-                if (
-                    firstName.toUpperCase().indexOf(filter) > -1 ||
-                    lastName.toUpperCase().indexOf(filter) > -1 ||
-                    phoneNumber.toUpperCase().indexOf(filter) > -1 ||
-                    address.toUpperCase().indexOf(filter) > -1
-                ) {
-                    rows[i].style.display = "";
-                } else {
-                    rows[i].style.display = "none";
-                }
-            }
+        if (
+            firstName.toUpperCase().indexOf(filter) > -1 ||
+            lastName.toUpperCase().indexOf(filter) > -1 ||
+            phoneNumber.toUpperCase().indexOf(filter) > -1 ||
+            address.toUpperCase().indexOf(filter) > -1
+        ) {
+            rows[i].style.display = "";
+        } else {
+            rows[i].style.display = "none";
         }
+    }
+}
+
+var currentOrderId; // Store the current order ID
+
+function deleteOrder(button,event) {
+  event.preventDefault(); // Prevent the default link action
+    var orderId = button.getAttribute("data-order-id");
+    currentOrderId = orderId; // Store the ID for later use
+    openModal();
+}
+
+function openModal() {
+    var modal = document.getElementById("delete-modal");
+    modal.style.display = "block";
+}
+
+function closeModal() {
+    var modal = document.getElementById("delete-modal");
+    modal.style.display = "none";
+}
+
+function confirmDelete() {
+    closeModal();
+
+    // Send AJAX request to delete order
+    var formData = new FormData();
+    formData.append('order_id', currentOrderId);
+
+    fetch('/delete_order/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove the deleted order's parent table row
+            var cancelButton = document.querySelector(`[data-order-id="${currentOrderId}"]`);
+            var orderRow = cancelButton.closest('tr');
+            if (orderRow) {
+                orderRow.remove();
+            }
+        } else {
+            // Show error message
+            var errorMessage = document.getElementById('error-message');
+            errorMessage.textContent = 'Failed to cancel order: ' + data.message;
+            errorMessage.style.display = 'block';
+
+            // Hide the error message after a delay
+            setTimeout(function() {
+                errorMessage.style.display = 'none';
+            }, 3000); // Hide after 3 seconds (adjust as needed)
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
     </script>
 
 {% endblock %}

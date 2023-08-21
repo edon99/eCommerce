@@ -22,7 +22,7 @@
     width: 100%;
     border-radius: 4px;
     aspect-ratio: 1;
-    object-fit: cover;
+    object-fit: contain;
    }
    .card-info a{
     text-decoration: none;
@@ -35,7 +35,7 @@
     margin-left: 20px;
    }
    .card-img {
-    background-color: rgba(0,0,0,0.27);
+    background-color:white;
     border-radius: .5rem;
     transition: .3s ease;
    }

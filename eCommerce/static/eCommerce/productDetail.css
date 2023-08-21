@@ -62,7 +62,7 @@ main{
     cursor: pointer;
     margin-right: 0;
     font-weight: 600;
-
+    align-items: center;
   }
   
   .options button:hover {
