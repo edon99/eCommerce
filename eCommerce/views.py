@@ -12,12 +12,12 @@ from django.core.paginator import Paginator
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
-from .models import Product, Order, Cart,Notification
+from .models import Product, Order, Cart,Notification,CartOrder,CartQuantities
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from users.forms import OrderForm
+from users.forms import CartOrderForm
 from .filters import ProductFilter
 # Create your views here.
 
@@ -121,41 +121,88 @@ def add_to_cart(request,product_id):
     product= Product.objects.get(pk=product_id)
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart.items.add(product)
-    cart.save()
+    quantities = cart.quantities
+    quantities[product_id] = 1
+    cart.quantities = quantities
     cart.calculate_total()
+    cart.save()
     return JsonResponse({'success': True})
+
 def delete_from_cart(request,product_id):
     product= Product.objects.get(pk=product_id)
     cart= Cart.objects.get(user=request.user)
+    quantities = cart.quantities
+    key = str(product_id)
+    quantities.pop(key)
+    cart.quantities = quantities
     cart.items.remove(product)
-    cart.save()
     cart.calculate_total()
+    cart.save()
     return JsonResponse({'success': True})
+
+
+def update_cart_quantities(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            updated_quantities = data.get('updated_quantities', None)
+            
+            if updated_quantities:
+                cart = Cart.objects.get(user=request.user)
+                quantities = cart.quantities
+                
+                for updated_item in updated_quantities:
+                    product_id = updated_item['product_id']
+                    quantity = updated_item['quantity']
+                    quantities[product_id] = quantity
+
+                cart.quantities = quantities
+                cart.calculate_total()  
+                cart.save()
+
+                return JsonResponse({'success': True})
+
+        except json.JSONDecodeError:
+            print('shit wild')
+            pass  
+
+    return JsonResponse({'success': False})
+
+
 
 def cart_items(request):
     cart = Cart.objects.get(user=request.user)
     cart_items = cart.items.all()
+    cart_quantities = cart.quantities
+    return render (request, 'eCommerce/cartItems.html',context={'cart': cart,'cart_items':cart_items,'quantities':cart_quantities})
+
+def cart_order(request):
     if request.method == 'POST':
-        # for key, value in request.POST.items():
-        #     if key.startswith('quantity_'):
-        #         product_id = key.split('_')[1]
-        #         new_quantity = int(value)
+        
+        form = CartOrderForm(request.POST)
+        cart = Cart.objects.get(user=request.user)
+        if form.is_valid():
+                form.instance.cart = cart
+                form.save()
+                return redirect('cart-payment')        
+        
+    else:
+        form = CartOrderForm() 
 
-        total_price = Decimal(request.POST.get('total', '0'))
-        cart.total_price=total_price
-        cart.save()
-    return render (request, 'eCommerce/cartItems.html',context={'cart': cart,'cart_items':cart_items})
+    print('idk at this point')
+    return render(request, 'eCommerce/cartOrder.html', {'form': form})
 
-def cart_order(request):
-    cart = Cart.objects.get(user=request.user)
+
+def cartPayment(request):
+
+    return render (request,'eCommerce/cartPayment.html')
     
-    return render (request, 'eCommerce/cartOrder.html')
 
-def cart_order(request):
-    cart = Cart.objects.get(user=request.user)
- 
+        
+    
+    
 
-    return render(request, 'eCommerce/cartOrder.html')
+
     
     
 
@@ -250,8 +297,8 @@ class OrderCreateView(CreateView):
     
     def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
         context = super(OrderCreateView, self).get_context_data(**kwargs)
-        product_id = self.kwargs['pk']  # Retrieve the product ID from the URL parameter
-        product = Product.objects.get(id=product_id)  # Retrieve the Product instance
+        product_id = self.kwargs['pk'] 
+        product = Product.objects.get(id=product_id) 
         context.update({
             "product": product
         })

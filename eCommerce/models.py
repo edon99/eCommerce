@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MaxValueValidator, MinValueValidator 
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models import JSONField
 from django.urls import reverse
 from decimal import Decimal
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -79,20 +81,29 @@ class Notification(models.Model):
     time = models.DateTimeField(default=timezone.now)
     read_state = models.BooleanField(default=False)
     order = models.ForeignKey(Order,on_delete=models.CASCADE,default=None)
-     
-    
+
+   
+class CartQuantities(models.Model):
+     cart = models.ForeignKey('Cart',on_delete=models.CASCADE)
+     product = models.ForeignKey(Product,on_delete=models.CASCADE)
+     quantity = models.IntegerField(default=1)   
+
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     items = models.ManyToManyField(Product)
-    quantities = models.IntegerField(default=1)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2,default=0)
     created_at = models.DateTimeField(auto_now=True)
-
+    quantities = models.JSONField(default=dict)
+   
     def calculate_total(self):
-        total_price = Decimal('0.00')  
-        for product in self.items.all():
-            quantity = self.quantities
-            total_price += product.price * quantity
+        total_price = Decimal('0.00')
+        for product_id, quantity in self.quantities.items():
+            try:
+                product = Product.objects.get(pk=product_id)
+                total_price += product.price * quantity
+            except ObjectDoesNotExist:
+                
+                pass
         self.total_price = total_price
         self.save()
 
@@ -100,9 +111,11 @@ class Cart(models.Model):
     def __str__(self):
         return f"Cart for {self.user.username}"
 
+    
+
+    
 class CartOrder(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    buyer = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     date_ordered = models.DateTimeField(default=timezone.now)
@@ -132,13 +145,13 @@ def create_orders_from_cart_order(cart_order_instance):
     for product in cart.items.all():
             Order.objects.create(
                 product=product,
-                buyer=cart_order_instance.buyer,
+                buyer=cart_order_instance.cart.user,
                 seller=product.seller,  # Adjust as needed
                 firstName=cart_order_instance.first_name,
                 lastName=cart_order_instance.last_name,
                 date_ordered=cart_order_instance.date_ordered,
-                quantity=cart.quantities,
-                total=product.price * cart.quantities,
+                quantity=1,
+                total=product.price * 1,
                 address=cart_order_instance.address,
                 phoneNumber=cart_order_instance.phoneNumber,
                 payment_state=cart_order_instance.payment_state,

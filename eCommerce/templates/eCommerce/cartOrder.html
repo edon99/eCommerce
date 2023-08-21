@@ -1,1 +1,49 @@
-<h1>gang</h1>
+{% extends "eCommerce/base.html"%} 
+{% load static %} 
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'eCommerce/orderForm.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h2>Cart Order Confirmation</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+      <div class="input-group">
+        <div style="flex: 1;">
+          <label for="{{ form.first_name.id_for_label }}">First Name:</label>
+          {{ form.first_name }}
+          <span class="form-error" style="color: red;">{{ form.first_name.errors }}</span>
+        </div>
+        <div style="flex: 1; margin-left: 10px;">
+          <label for="{{ form.last_name.id_for_label }}">Last Name:</label>
+          {{ form.last_name }}
+          <span class="form-error" style="color: red;">{{ form.last_name.errors }}</span>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <div style="flex: 1;">
+          <label for="{{ form.phoneNumber.id_for_label }}">Phone Number:</label>
+          {{ form.phoneNumber }}
+          <span class="form-error" style="color: red;">{{ form.phoneNumber.errors }}</span>
+          <small>Format: 123 456 7890</small>
+        </div>
+        <div style="flex: 1; margin-left: 10px;">
+          <label for="{{ form.address.id_for_label }}">Address:</label>
+          {{ form.address }}
+          <span class="form-error" style="color: red;">{{ form.address.errors }}</span>
+        </div>
+      </div>
+      
+      <div class="btn-container">
+        <button id="cancel-button" value="Cancel" onClick="javascript:history.go(-1);" class="btn cancel">Cancel</button>
+        <input id="checkout-button" type="submit" value="Proceed to payment" class="btn confirm">
+      </div>
+    </form>
+  </div>
+</body>
+</html>
+{% endblock %}

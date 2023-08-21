@@ -1,6 +1,6 @@
 
 from django import forms
-from eCommerce.models import User ,Order, Product
+from eCommerce.models import User ,Order, Product , CartOrder
 from users.models import Profile
 from django.contrib.auth.forms import UserCreationForm
 from eCommerce.widgets import ImagePreviewWidget
@@ -68,6 +68,18 @@ class OrderForm(forms.ModelForm):
         model = Order
         fields = ['seller', 'buyer', 'product', 'firstName', 'lastName', 'phoneNumber', 'quantity', 'address','payment_state','delivery_state']
     
+class CartOrderForm(forms.ModelForm):
+    first_name = forms.CharField(max_length=50)
+    last_name = forms.CharField(max_length=50)
+    address = forms.CharField(max_length=200)
+    phoneNumber = forms.IntegerField()
+  
+    class Meta:
+        model = CartOrder
+        fields = ['first_name','last_name','address','phoneNumber']
+    
+
+
 
    
 

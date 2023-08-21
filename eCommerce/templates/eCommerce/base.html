@@ -125,7 +125,16 @@
 
 </nav>
 {% endif %}
- {% block content %}{% endblock %}
+{% if messages %}
+{% for message in messages %}
+<div class="success-message">
+    <i> {{ message }} </i>
+</div>
+{% endfor %}
+{% endif %}
+ {% block content %}
+
+ {% endblock %}
  <script>
   document.addEventListener('DOMContentLoaded', function() {
   const notificationIcon = document.querySelector('.notification-icon');

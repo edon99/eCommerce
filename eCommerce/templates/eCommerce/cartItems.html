@@ -1,7 +1,7 @@
 {% extends "eCommerce/base.html" %}
 
 {% load static %}
-
+{% load quantityFilter %}
 {% block content %}
 <head>
     <title>Cart Items</title>
@@ -10,7 +10,9 @@
 <body>
     <main>
         <div class="items-container"> 
-            {% for item in cart_items %}{% csrf_token %}
+        
+            {% csrf_token %}
+            {% for item in cart_items %}
             <div class="item" data-product-id="{{ item.id }}">
                 <div class="left-ting">
                     <div class="image">
@@ -30,11 +32,11 @@
                 </div>
                 <div class="quantity">
                     <button class="quantity-button quantity-increment">+</button>
-                    <input type="number" class="quantity-input" value="1" min="1">
+                    <input type="number" class="quantity-input" value="{{ quantities|get_value:item.id }}" min="1">
                     <button class="quantity-button quantity-decrement">-</button>
                 </div>
                 <div class="remove-button-container">
-                    <button class="remove-button">x</button>
+                    <button class="remove-button">&#215;</button>
                 </div>
             </div>
             {% endfor %}
@@ -44,7 +46,7 @@
             
             <h1></h1><h1 id="total-price">Total To Pay: $0</h1>
             <input type="hidden" id="total-input" name="total" value="0">
-            <a href="{% url 'cart-order'%}"><button type="button" class="options">
+            <a href=""><button type="submit" id="continue" onclick="updateQuantitiesOnServer()" class="options">
                 Continue
             </button></a>
          </form>
@@ -63,8 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to calculate total price
     function calculateTotalPrice() {
         let total = 0;
-        const itemElements = itemsContainer.querySelectorAll('.item');
 
+        const itemElements = itemsContainer.querySelectorAll('.item');
         itemElements.forEach(itemElement => {
             const quantityInput = itemElement.querySelector('.quantity-input');
             const price = parseFloat(itemElement.querySelector('.price h2').textContent.replace('$', ''));
@@ -99,7 +101,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const csrfToken = "{{ csrf_token }}";
 
-    function removeProduct(productId) {
+function removeProduct(productId) {
+    const csrfToken = "{{ csrf_token }}";
     fetch(`/delete_from_cart/${productId}/`, {
         method: 'DELETE',
         headers: {
@@ -125,7 +128,41 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 });
-    calculateTotalPrice(); 
+function updateQuantitiesOnServer() {
+    const itemElements = document.querySelectorAll('.item');
+    const updatedQuantities = [];
+
+    itemElements.forEach(itemElement => {
+        const productId = itemElement.getAttribute('data-product-id');
+        const quantityInput = itemElement.querySelector('.quantity-input');
+        const quantity = parseInt(quantityInput.value);
+        updatedQuantities.push({ product_id: productId, quantity: quantity });
+    });
+
+    const csrfToken = "{{ csrf_token }}";
+
+    fetch('/update_cart_quantities/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+        body: JSON.stringify({ updated_quantities: updatedQuantities }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Handle success, if needed
+            // For example, you might want to redirect to another page here
+            window.location.href = "{% url 'cart-order' %}";
+        }
+    })
+    .catch(error => {
+        console.error('An error occurred:', error);
+    });
+}
+
 </script>
 </body>
 
