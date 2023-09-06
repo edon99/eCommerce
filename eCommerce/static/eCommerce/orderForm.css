@@ -83,3 +83,19 @@ body {
   .form-error{
     color: red;
   }
+
+  .phone-input::-webkit-outer-spin-button,
+.phone-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.phone-input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.phone-input {
+  border: 1px solid #ccc;
+  padding: 5px;
+  /* Add more styles as needed */
+}

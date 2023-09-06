@@ -12,6 +12,7 @@
         <div class="items-container"> 
         
             {% csrf_token %}
+            {% if cart_items %}
             {% for item in cart_items %}
             <div class="item" data-product-id="{{ item.id }}">
                 <div class="left-ting">
@@ -40,13 +41,15 @@
                 </div>
             </div>
             {% endfor %}
-       
+            {% else %}
+            <h2 class="empty"><span>Your cart is empty! check some <a style="text-decoration: none;" href="{% url 'site-products' %}">Products here!</a></span></h2>
+            {% endif %}
         </div>
         <div class="payment-container">
             
             <h1></h1><h1 id="total-price">Total To Pay: $0</h1>
             <input type="hidden" id="total-input" name="total" value="0">
-            <a href=""><button type="submit" id="continue" onclick="updateQuantitiesOnServer()" class="options">
+            <a href="{% url 'cart-order' %}"><button type="submit" id="continue" onclick="updateQuantitiesOnServer()" class="options">
                 Continue
             </button></a>
          </form>
@@ -155,7 +158,7 @@ function updateQuantitiesOnServer() {
         if (data.success) {
             // Handle success, if needed
             // For example, you might want to redirect to another page here
-            window.location.href = "{% url 'cart-order' %}";
+            console.log('Great success')
         }
     })
     .catch(error => {

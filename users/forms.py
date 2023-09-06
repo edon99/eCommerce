@@ -72,7 +72,7 @@ class CartOrderForm(forms.ModelForm):
     first_name = forms.CharField(max_length=50)
     last_name = forms.CharField(max_length=50)
     address = forms.CharField(max_length=200)
-    phoneNumber = forms.IntegerField()
+    phoneNumber = forms.NumberInput(attrs={'minlength': 10, 'maxlength': 15, 'required': True, 'type': 'number',})
   
     class Meta:
         model = CartOrder

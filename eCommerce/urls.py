@@ -6,7 +6,6 @@ from . import views
 urlpatterns = [
     # path('', views.home, name='site-home'),
     path('', views.home, name='site-home'),
-    path('about/', views.about, name='site-about'),
     path('products/', ProductListView.as_view(), name='site-products'),
     path('products/<int:pk>/', ProductDetailView.as_view(), name='product-detail'),
     path('products/<int:pk>/update/', ProductUpdateView.as_view(), name='product-update'),
@@ -26,7 +25,7 @@ urlpatterns = [
     path('add_to_cart/<int:product_id>/', views.add_to_cart,name='add-to-cart'),
     path('cart/order/', views.cart_order, name='cart-order'),
     path('update_cart_quantities/', views.update_cart_quantities, name='update_cart_quantities'),
-    path('cart/order/payment/', views.cartPayment, name='cart-payment'),
+    path('cart/order/payment/<int:order_id>', views.cartPayment, name='cart-payment'),
     
 
 ]

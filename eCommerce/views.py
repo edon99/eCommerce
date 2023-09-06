@@ -168,20 +168,26 @@ def cart_order(request):
         form = CartOrderForm(request.POST)
         cart = Cart.objects.get(user=request.user)
         if form.is_valid():
-                form.instance.cart = cart
-                form.save()
-                return redirect('cart-payment')        
+                
+                new_order = form.save(commit=False)
+                new_order.cart = cart
+                new_order.save()
+                
+                return redirect('cart-payment',order_id = new_order.id)        
         
     else:
         form = CartOrderForm() 
 
-    print('idk at this point')
     return render(request, 'eCommerce/cartOrder.html', {'form': form})
 
 
-def cartPayment(request):
+def cartPayment(request,order_id):
 
-    return render (request,'eCommerce/cartPayment.html')
+    order = CartOrder.objects.get(pk=order_id)
+    cart = order.cart
+    cart_items = cart.items.all()
+    quantities = cart.quantities
+    return render (request,'eCommerce/cartPayment.html',context={'order':order,'cart':cart,'cart_items':cart_items,'quantities':quantities})
     
 
         
@@ -369,8 +375,6 @@ class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
     
-def about(request) :
-    return render(request, 'eCommerce/about.html')
 
 
 

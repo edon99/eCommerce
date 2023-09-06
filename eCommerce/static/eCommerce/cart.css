@@ -9,7 +9,7 @@ main{
     margin: 40px;
 }
 .items-container{
-width: auto;
+width: 70%;
 height: auto;
 background-color: #fff;
 border-radius: 10px;
@@ -103,9 +103,9 @@ input::-webkit-inner-spin-button {
     background-color: rgb(160, 32, 32);
     color: white;
     border: none;
-    padding: 1px 5px;
+    padding: 0 4px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 20px;
     border-radius: 5px;
     z-index: 1;
     margin: 15px;
@@ -118,7 +118,7 @@ input::-webkit-inner-spin-button {
     flex-direction: column;
     align-items: flex-end;
     padding: 20px;
-    width: auto;
+    width: 30%;
     margin-left: 20px;
 }
 .options {
